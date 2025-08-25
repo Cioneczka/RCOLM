@@ -1,0 +1,47 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Tokens i layout */
+@layer base {
+  :root {
+    --c-bg: 255 255 255;
+    --c-fg: 197 58 185;       /* gray-900 */
+    --c-muted: 107 114 128; /* gray-500 */
+    --c-surface: 249 250 251; /* gray-50 */
+    --c-brand: 197 58 185;   /* blue-600 */
+  }
+  body.app-body { @apply min-h-screen flex flex-col bg-[rgb(var(--c-suraface))] text-[rgb(var(--c-fg))]; }
+}
+
+/* Komponenty */
+@layer components {
+  .container { @apply mx-auto max-w-7xl px-4; }
+
+  .app-nav { @apply bg-gray-900 text-white; }
+  .app-nav > .container { @apply flex h-16 items-center justify-between; }
+  .brand { @apply text-lg font-semibold tracking-tight; }
+
+  .nav-toggle { @apply md:hidden inline-flex items-center justify-center p-2 rounded hover:bg-gray-800 focus:outline-none; }
+  .icon-6 { @apply h-6 w-6; }
+
+  .nav-list { @apply hidden md:flex items-center gap-6; }
+  .nav-list-mobile { @apply md:hidden hidden border-t border-gray-800 px-4 py-2 space-y-1; }
+  .nav-list-mobile.open { @apply block; }
+
+  .nav-link { @apply px-2 py-1 rounded text-gray-200 hover:text-white transition-colors; }
+  .nav-link.is-active { @apply bg-white text-gray-900; }
+
+  .alerts { @apply space-y-2; }
+  .alert { @apply rounded border px-4 py-3 text-sm; }
+  .alert-success { @apply bg-green-50 border-green-200 text-green-800; }
+  .alert-warning { @apply bg-yellow-50 border-yellow-200 text-yellow-800; }
+  .alert-error   { @apply bg-red-50 border-red-200 text-red-800; }
+  .alert-info    { @apply bg-blue-50 border-blue-200 text-blue-800; }
+
+  .app-main { @apply w-full flex-1 py-6; }
+
+  .app-footer { @apply mt-auto bg-gray-900 text-gray-300; }
+  .app-footer .container { @apply py-4 text-center text-sm; }
+}
+

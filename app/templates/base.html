@@ -1,0 +1,68 @@
+{# templates/base.html #}
+<!doctype html>
+<html lang="pl">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>{% block title %}RCOLM{% endblock %}</title>
+
+  {# Tailwind z CDN (na dev). W prod podłącz static/css/app.css #}
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  {% block head_extra %}{% endblock %}
+</head>
+<body class="min-h-screen flex flex-col bg-gray-50 text-gray-900">
+
+  <!-- NAVBAR -->
+  <nav class="bg-violet-500 text-white">
+    <div class="container mx-auto max-w-7xl px-4 flex h-16 items-center justify-between">
+      <a href="#" class="text-lg font-semibold tracking-tight">RCOLM</a>
+      
+      <!-- Desktop menu -->
+      <ul class="hidden md:flex items-center gap-6">
+        <li><a href="#" class="nav-link">Home</a></li>
+        <li><a href="/app" class="nav-link">App</a></li>
+        <li><a href="/contact" class="nav-link">Contact</a></li>
+      </ul>
+
+
+      <!-- Mobile toggle -->
+      <button id="navToggle" class="md:hidden p-2 rounded hover:bg-violet-500 focus:outline-none">
+        <svg class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                d="M4 6h16M4 12h16M4 18h16" />
+        </svg>
+      </button>
+    </div>
+
+    <!-- Mobile menu -->
+    <div id="mobileMenu" class="hidden md:hidden border-t border-gray-800 px-4 py-2 space-y-1">
+      <a href="#" class="block px-3 py-2 rounded-md text-gray-200 hover:bg-gray-800">Home</a>
+      <a href="/app" class="block px-3 py-2 rounded-md text-gray-200 hover:bg-gray-800">App</a>
+      <a href="/contact" class="block px-3 py-2 rounded-md text-gray-200 hover:bg-gray-800">Kontakt</a>
+    </div>
+  </nav>
+
+  <!-- MAIN CONTENT -->
+  <main class="flex-1 container mx-auto max-w-7xl px-4 py-6">
+    {% block content %}{% endblock %}
+  </main>
+
+  <!-- FOOTER -->
+  <footer class="bg-violet-500 text-gray-300">
+    <div class="container mx-auto max-w-7xl px-4 py-4 text-center text-sm">
+      &copy; {{ current_year or 2025 }} RCOLM
+    </div>
+  </footer>
+
+  <!-- JS do mobile menu -->
+  <script>
+    document.getElementById('navToggle')?.addEventListener('click', () => {
+      document.getElementById('mobileMenu')?.classList.toggle('hidden');
+    });
+  </script>
+
+  {% block scripts %}{% endblock %}
+</body>
+</html>
+

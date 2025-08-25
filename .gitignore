@@ -1,0 +1,19 @@
+#ignoruj środowisko virtualne
+myenv/
+
+#ignoruj wrażliwe pliki z kluczami
+config/*.json
+
+#ignoruj pliki tymczasowe i systemowe 
+__pycache__/
+*.pyc
+*.pyo
+*.ipynb_checkpoints/
+config/db_config/firestore_key.json
+config/db_config/firestore_key.json
+app/static/tailwindcss
+node_modules/
+.venv/
+__pycache__/
+dist/
+build/
