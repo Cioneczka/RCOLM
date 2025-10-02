@@ -1,0 +1,9 @@
+{# templates/macros.html #}
+{% macro nav_link(endpoint, label) -%}
+  {%- set is_active = (request.endpoint == endpoint) -%}
+  <li>
+    <a href="{{ url_for(endpoint) }}"
+       class="nav-link {{ 'is-active' if is_active else '' }}">{{ label }}</a>
+  </li>
+{%- endmacro %}
+

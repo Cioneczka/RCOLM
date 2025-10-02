@@ -1,0 +1,61 @@
+
+<!doctype html>
+<html lang="pl">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>{% block title %}RCOLM{% endblock %}</title>
+
+  <!-- Ładujemy TYLKO skompilowany CSS -->
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}?v=dev">
+  {% block head_extra %}{% endblock %}
+</head>
+<body class="rcolm min-h-screen flex flex-col bg-white text-gray-900 dark:bg-gray-950 dark:text-gray-100">
+
+  <!-- NAVBAR -->
+  <header class="rcolm-nav">
+    <div class="wrap nav-inner">
+      <img src='static/img/RCOLM_logo.png' class="main_image">
+
+      <nav class="nav-links">
+        <a href="/" class="nav-btn nav-btn-active">Home</a>
+        <a href="/app" class="nav-btn nav-btn-active">App</a>
+        <a href="/contact" class="nav-btn nav-btn-active">Contact</a>
+      </nav>
+
+      <button id="navToggle" class="nav-toggle" aria-label="Menu">
+        <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                d="M4 6h16M4 12h16M4 18h16"/>
+        </svg>
+      </button>
+    </div>
+
+    <div id="mobileMenu" class="mobile-menu hidden">
+      <a href="/" class="mobile-link">Home</a>
+      <a href="/app" class="mobile-link">App</a>
+      <a href="/contact" class="mobile-link">Kontakt</a>
+    </div>
+  </header>
+
+  <!-- MAIN -->
+  <main class="flex-1">
+    {% block content %}{% endblock %}
+  </main>
+
+  <!-- FOOTER -->
+  <footer class="rcolm-footer">
+    <div class="wrap foot-inner">
+      &copy; {{ current_year or 2025 }} RCOLM
+    </div>
+  </footer>
+
+  <script>
+    document.getElementById('navToggle')?.addEventListener('click', () => {
+      document.getElementById('mobileMenu')?.classList.toggle('hidden');
+    });
+  </script>
+  {% block scripts %}{% endblock %}
+</body>
+</html>
+

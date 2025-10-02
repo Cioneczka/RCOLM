@@ -1,0 +1,190 @@
+
+{% extends "base.html" %}
+{% block title %}Results{% endblock %}
+
+{% block content %}
+  <!-- HEADER / HERO -->
+  <section class="hero">
+    <div class="hero-bg"></div>
+    <div class="wrap hero-box">
+      <div class="hero-left">
+        <h1 class="hero-title">
+          RCOLM <span class="text-accent">– analiza audio</span>
+        </h1>
+        <p class="hero-sub">
+          Wgraj plik audio i zobacz wyciągnięte cechy: tonację (key/mode), tempo, chromę, spektrogram,
+          a także wyniki modeli (gatunek, mowa/muzyka, BPM).
+        </p>
+
+        <!-- Upload -->
+        <form class="mt-6 flex items-center gap-3">
+          <input type="file" name="audio" accept=".wav,.mp3,.flac,.ogg,.m4a" class="file-input"/>
+          <button type="button" class="btn-primary">Analizuj</button>
+          <a href="#results" class="btn-secondary">Przejdź do wyników</a>
+        </form>
+      </div>
+    </div>
+  </section>
+
+  <!-- LIVE CHART CENTER -->
+  <section id="live" class="section">
+    <div class="wrap">
+      <h2 class="features-title text-center mb-2">Podgląd na żywo</h2>
+      <p class="features-lead text-center mb-8">Miejsce na wykres w JS (np. live chroma / waveform / widmo).</p>
+
+      <!-- DUŻY CENTRALNY DIV NA WYKRES JS -->
+      <div id="live-chart"
+           class="w-full max-w-5xl mx-auto aspect-video rounded-2xl shadow-lg border border-neutral-200 dark:border-neutral-800 bg-white dark:bg-neutral-900 flex items-center justify-center">
+        <span class="opacity-60 text-sm">[WYKRES LIVE]</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- RESULTS -->
+  <section id="results" class="section">
+    <div class="wrap">
+      <div class="features-head">
+        <h2 class="features-title">Wyniki analizy</h2>
+        <p class="features-lead">Poniżej znajdziesz wszystkie wyekstrahowane cechy oraz wyniki modeli.</p>
+      </div>
+
+      <!-- Top meta + podstawowe info -->
+      <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        <article class="card">
+          <h3 class="card-title">Metadane pliku</h3>
+          <div class="card-desc space-y-1">
+            <p><b>Nazwa:</b> blues.00011.wav</p>
+            <p><b>Czas trwania:</b> 30 s</p>
+            <p><b>Próbkowanie:</b> 22050 Hz</p>
+            <p><b>Kanały:</b> 1</p>
+            <p><b>Format:</b> WAV</p>
+          </div>
+        </article>
+
+        <article class="card">
+          <h3 class="card-title">Key / Mode</h3>
+          <div class="card-desc space-y-1">
+            <p><b>Key:</b> C</p>
+            <p><b>Mode:</b> major</p>
+            <p><b>Pewność:</b> 0.87</p>
+            <p class="text-xs opacity-70">Źródło: Essentia KeyExtractor</p>
+          </div>
+        </article>
+
+        <article class="card">
+          <h3 class="card-title">Tempo i metrum</h3>
+          <div class="card-desc space-y-1">
+            <p><b>Tempo (BPM):</b> 118</p>
+            <p><b>Metrum:</b> 4/4</p>
+            <p><b>Głośność:</b> -12 dB</p>
+          </div>
+        </article>
+      </div>
+
+      <!-- Spotify-like features + wyniki modeli -->
+      <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mt-6">
+        <article class="card">
+          <h3 class="card-title">Cechy percepcyjne</h3>
+          <div class="card-desc grid grid-cols-2 gap-3 text-sm">
+            <p><b>Valence:</b> 0.65</p>
+            <p><b>Energy:</b> 0.72</p>
+            <p><b>Danceability:</b> 0.55</p>
+            <p><b>Acousticness:</b> 0.12</p>
+            <p><b>Instrumentalness:</b> 0.03</p>
+            <p><b>Liveness:</b> 0.21</p>
+            <p><b>Speechiness:</b> 0.04</p>
+          </div>
+        </article>
+
+        <article class="card">
+          <h3 class="card-title">Wyniki modeli</h3>
+          <div class="card-desc space-y-1">
+            <p><b>Gatunek (CNN):</b> Blues</p>
+            <p><b>Mowa/Muzyka:</b> Muzyka</p>
+            <p><b>BPM (model):</b> 116</p>
+            <p><b>Inne cechy:</b> brak</p>
+          </div>
+        </article>
+
+        <article class="card">
+          <h3 class="card-title">Podsumowanie chromy</h3>
+          <div class="card-desc">
+            <p class="mb-2 text-sm opacity-80">Średnia chroma (12 klas wysokości):</p>
+            <ul class="grid grid-cols-2 gap-1 text-sm">
+              <li>C: 0.12</li>
+              <li>C#: 0.08</li>
+              <li>D: 0.10</li>
+              <li>D#: 0.07</li>
+              <li>E: 0.11</li>
+              <li>F: 0.09</li>
+              <li>F#: 0.06</li>
+              <li>G: 0.14</li>
+              <li>G#: 0.05</li>
+              <li>A: 0.07</li>
+              <li>A#: 0.05</li>
+              <li>B: 0.06</li>
+            </ul>
+          </div>
+        </article>
+      </div>
+
+      <!-- Wizualizacje -->
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mt-6">
+        <article class="card">
+          <h3 class="card-title">Chromagram</h3>
+          <div class="card-desc">
+            <div class="h-64 w-full bg-neutral-100 flex items-center justify-center rounded-md">
+              [CHROMAGRAM IMG]
+            </div>
+          </div>
+        </article>
+
+        <article class="card">
+          <h3 class="card-title">Mel-spektrogram</h3>
+          <div class="card-desc">
+            <div class="h-64 w-full bg-neutral-100 flex items-center justify-center rounded-md">
+              [MELSPEC IMG]
+            </div>
+          </div>
+        </article>
+      </div>
+
+      <!-- Segmenty -->
+      <div class="card mt-6">
+        <h3 class="card-title">Segmenty &amp; wektory pitch</h3>
+        <div class="card-desc overflow-x-auto">
+          <table class="min-w-full text-sm">
+            <thead>
+              <tr class="text-left opacity-70">
+                <th>#</th><th>Start (s)</th><th>Długość (s)</th><th>Pitches</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr><td>1</td><td>0.00</td><td>0.50</td><td>[0.8, 0.1, 0.05, ...]</td></tr>
+              <tr><td>2</td><td>0.50</td><td>0.50</td><td>[0.7, 0.2, 0.1, ...]</td></tr>
+              <tr><td>3</td><td>1.00</td><td>0.50</td><td>[0.6, 0.3, 0.1, ...]</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- Logi / błędy -->
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mt-6">
+        <article class="card">
+          <h3 class="card-title">Log</h3>
+          <pre class="card-desc text-xs whitespace-pre-wrap">[INFO] Start analizy
+[INFO] Ekstrakcja cech chroma
+[OK] Key: C major (0.87)
+[INFO] CNN Genre = Blues
+</pre>
+        </article>
+
+        <article class="card">
+          <h3 class="card-title">Błędy</h3>
+          <div class="card-desc opacity-60">Brak błędów</div>
+        </article>
+      </div>
+    </div>
+  </section>
+{% endblock %}
+
