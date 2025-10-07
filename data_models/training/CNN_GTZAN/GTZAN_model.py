@@ -22,7 +22,7 @@ tf.config.optimizer.set_jit(False)  # wyłącz XLA, jeśli robił problemy
 import sys
 sys.path.append("/home/ciona/projects/RCOLM/data_models/MyModels/")
 from mymodels import MyModels
-tf.config.set_visible_devices([], 'GPU')
+
 import os
 os.environ["CUDA_VISIBLE_DEVICES"] = "-1"   # całkowicie wyłącz GPU
 # %%
@@ -177,17 +177,6 @@ class MLP_gtzan:
 
 
 
-    
-# %% tutaj trzeba ustawic dynamiczny link, dodac na etapie zapisu pliku w miejsce docelowe 
-gtzan_path = "/home/ciona/projects/RCOLM/data/converted_data/GTZAN/"
-save_dir =  "/home/ciona/projects/RCOLM/data_models/saved/gtzan_v1"
-image_path = "/home/ciona/projects/RCOLM/tests/png/blue_train.png"
+# %% USTAW ŚCIEŻKĘ NA GÓRZE PRZED UŻYCIEM
 
-# X_train, X_test, y_train, y_test, genre_names = MLP_gtzan.train_test_split_gtzan(gtzan_path)
-# num_classes = len(genre_names)
-# model = MyModels.CNN_model(num_classes)
-# model, history = MLP_gtzan.CNN_train(X_train, X_test, y_train, y_test, genre_names, model)
-# MLP_gtzan.save_model(model, genre_names, save_dir)
 
-model, meta = MLP_gtzan.load_model(save_dir)
-MLP_gtzan.predict_from_path(model, meta, image_path)

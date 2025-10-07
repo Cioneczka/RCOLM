@@ -33,3 +33,5 @@ data/converted_data
 *.pkl
 *.zip
 *.png
+*.db
+*.init  

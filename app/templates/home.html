@@ -3,7 +3,11 @@
 {% block title %}Strona główna | RCOLM{% endblock %}
 
 {% block content %}
-  <!-- HEADER / HERO -->
+
+
+
+
+
   <section class="hero">
     <div class="hero-bg"></div>
     <div class="wrap hero-box">
@@ -15,50 +19,14 @@
           Wgraj plik audio i zobacz wyciągnięte cechy: tonację (key/mode), tempo, chromę, spektrogram,
           a także wyniki modeli (gatunek, mowa/muzyka, BPM).
         </p>
-        <form class="mt-6 flex items-center gap-3" action="#" method="post" enctype="multipart/form-data">
-          <input type="file" name="audio" accept=".wav,.mp3,.flac,.ogg,.m4a" class="file-input"/>
-          <button type="button" class="btn-primary">Analizuj</button>
-          <a href="#features" class="btn-secondary">Zobacz więcej</a>
-        </form>
-      </div>
-    </div>
-  </section>
 
-  <!-- FEATURES -->
-  <section id="features" class="section">
-    <div class="wrap">
-      <div class="features-head">
-        <h2 class="features-title">Co oferuje ten szablon?</h2>
-        <p class="features-lead">Zestaw prostych komponentów i bloków do szybkiego startu.</p>
-      </div>
+        <!-- Upload -->
 
-      <div class="features-grid">
-        <article class="card">
-          <h3 class="card-title">Szybkość wdrożenia</h3>
-          <p class="card-desc">Gotowe bloki sekcji: funkcje, FAQ, pricing, testimoniale — wklejasz i działa.</p>
-        </article>
-        <article class="card">
-          <h3 class="card-title">Responsywność</h3>
-          <p class="card-desc">Siatka i spacing dobrane pod mobile-first. Ładnie skaluje się na desktop.</p>
-        </article>
-        <article class="card">
-          <h3 class="card-title">Ciemny tryb</h3>
-          <p class="card-desc">Style przygotowane pod dark mode — zero migotania, klarowne kontrasty.</p>
-        </article>
-        <article class="card">
-          <h3 class="card-title">Czytelna typografia</h3>
-          <p class="card-desc">Przemyślany rytm, odstępy i hierarchia nagłówków; łatwo czytać dłuższe treści.</p>
-        </article>
-        <article class="card">
-          <h3 class="card-title">Łatwe rozszerzanie</h3>
-          <p class="card-desc">Dodawaj kolejne bloki według potrzeb bez walki z layoutem.</p>
-        </article>
-        <article class="card">
-          <h3 class="card-title">Minimalny CSS</h3>
-          <p class="card-desc">Użyte tylko niezbędne warstwy; resztę kontrolujesz utilami.</p>
-        </article>
-      </div>
-    </div>
+<form action="/analyze" method="post" enctype="multipart/form-data">
+  <input type="file" name="file" accept=".wav,.mp3,.flac,.ogg,.m4a" required />
+  <button type="submit">Analizuj</button>
+</form>
+</div>
   </section>
 
   <!-- HOW IT WORKS -->

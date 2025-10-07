@@ -18,10 +18,12 @@
 
         <!-- Upload -->
         <form class="mt-6 flex items-center gap-3">
-          <input type="file" name="audio" accept=".wav,.mp3,.flac,.ogg,.m4a" class="file-input"/>
-          <button type="button" class="btn-primary">Analizuj</button>
-          <a href="#results" class="btn-secondary">Przejdź do wyników</a>
-        </form>
+
+<form action="/analyze" method="post" enctype="multipart/form-data">
+  <input type="file" name="file" accept=".wav,.mp3,.flac,.ogg,.m4a" required />
+  <button type="submit">Analizuj</button>
+</form>
+
       </div>
     </div>
   </section>
@@ -53,10 +55,9 @@
         <article class="card">
           <h3 class="card-title">Metadane pliku</h3>
           <div class="card-desc space-y-1">
-            <p><b>Nazwa:</b> blues.00011.wav</p>
+            <p><b>Nazwa:</b> {{filepath}}</p>
             <p><b>Czas trwania:</b> 30 s</p>
-            <p><b>Próbkowanie:</b> 22050 Hz</p>
-            <p><b>Kanały:</b> 1</p>
+            <p><b>Próbkowanie:</b> {{sr}}Hz</p>
             <p><b>Format:</b> WAV</p>
           </div>
         </article>
@@ -64,19 +65,17 @@
         <article class="card">
           <h3 class="card-title">Key / Mode</h3>
           <div class="card-desc space-y-1">
-            <p><b>Key:</b> C</p>
-            <p><b>Mode:</b> major</p>
-            <p><b>Pewność:</b> 0.87</p>
-            <p class="text-xs opacity-70">Źródło: Essentia KeyExtractor</p>
+            <p><b>Key:</b> {{key}}</p>
+            <p><b>Mode:</b> {{scale}}</p>
           </div>
         </article>
 
         <article class="card">
           <h3 class="card-title">Tempo i metrum</h3>
           <div class="card-desc space-y-1">
-            <p><b>Tempo (BPM):</b> 118</p>
-            <p><b>Metrum:</b> 4/4</p>
-            <p><b>Głośność:</b> -12 dB</p>
+            <p><b>Tempo (BPM):</b> {{tempo}}</p>
+            <p><b>Metrum:</b></p>
+            <p><b>Głośność:</b></p>
           </div>
         </article>
       </div>
@@ -86,23 +85,27 @@
         <article class="card">
           <h3 class="card-title">Cechy percepcyjne</h3>
           <div class="card-desc grid grid-cols-2 gap-3 text-sm">
-            <p><b>Valence:</b> 0.65</p>
-            <p><b>Energy:</b> 0.72</p>
-            <p><b>Danceability:</b> 0.55</p>
-            <p><b>Acousticness:</b> 0.12</p>
-            <p><b>Instrumentalness:</b> 0.03</p>
-            <p><b>Liveness:</b> 0.21</p>
-            <p><b>Speechiness:</b> 0.04</p>
+            <p><b>Valence:</b></p>
+            <p><b>Energy:</b></p>
+            <p><b>Danceability:</b></p>
+            <p><b>Acousticness:</b></p>
+            <p><b>Instrumentalness:</b></p>
+            <p><b>Liveness:</b></p>
+            <p><b>Speechiness:</b></p>
           </div>
         </article>
 
+
+        <!-- TUTAJ TRZEBA POPRAWIC WYSWIETLANIE -->
         <article class="card">
-          <h3 class="card-title">Wyniki modeli</h3>
+          <h3 class="card-title">Przypisane gatunki</h3>
           <div class="card-desc space-y-1">
-            <p><b>Gatunek (CNN):</b> Blues</p>
-            <p><b>Mowa/Muzyka:</b> Muzyka</p>
-            <p><b>BPM (model):</b> 116</p>
-            <p><b>Inne cechy:</b> brak</p>
+        {% for genre, prob in genre_predictions %}
+        <tr>
+          <td class="px-2 py-1">{{ genre }}</td>
+          <td class="px-2 py-1">{{ "%.2f"|format(prob * 100) }}%</td>
+        </tr>
+        {% endfor %}
           </div>
         </article>
 
@@ -112,17 +115,17 @@
             <p class="mb-2 text-sm opacity-80">Średnia chroma (12 klas wysokości):</p>
             <ul class="grid grid-cols-2 gap-1 text-sm">
               <li>C: 0.12</li>
-              <li>C#: 0.08</li>
-              <li>D: 0.10</li>
-              <li>D#: 0.07</li>
-              <li>E: 0.11</li>
-              <li>F: 0.09</li>
-              <li>F#: 0.06</li>
-              <li>G: 0.14</li>
-              <li>G#: 0.05</li>
-              <li>A: 0.07</li>
-              <li>A#: 0.05</li>
-              <li>B: 0.06</li>
+              <li>C#: </li>
+              <li>D: </li>
+              <li>D#: </li>
+              <li>E: </li>
+              <li>F: </li>
+              <li>F#: </li>
+              <li>G: </li>
+              <li>G#: </li>
+              <li>A: </li>
+              <li>A#: </li>
+              <li>B: </li>
             </ul>
           </div>
         </article>
