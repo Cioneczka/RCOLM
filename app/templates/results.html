@@ -53,17 +53,17 @@
       <!-- Top meta + podstawowe info -->
       <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
         <article class="card">
-          <h3 class="card-title">Metadane pliku</h3>
+          <h3 class="card-title">Metadane pliku &#x2611;	</h3>
           <div class="card-desc space-y-1">
             <p><b>Nazwa:</b> {{original_name}}</p>
-            <p><b>Czas trwania:</b> 30 s</p>
+            <p><b>Czas trwania:</b> {{duration}}s</p>
             <p><b>Próbkowanie:</b> {{sr}}Hz</p>
-            <p><b>Format:</b> WAV</p>
+            <p><b>Format:</b> {{mime}}</p>
           </div>
         </article>
 
         <article class="card">
-          <h3 class="card-title">Key / Mode</h3>
+          <h3 class="card-title">Key / Mode &#x2611;	</h3>
           <div class="card-desc space-y-1">
             <p><b>Key:</b> {{key}}</p>
             <p><b>Mode:</b> {{scale}}</p>
@@ -137,7 +137,8 @@
           <h3 class="card-title">Chromagram</h3>
           <div class="card-desc">
             <div class="h-64 w-full bg-neutral-100 flex items-center justify-center rounded-md">
-              [CHROMAGRAM IMG]
+              <img src="{{ chroma_img_src }}" alt="Mel spectrogram" style="max-width:100%;border-radius:10px;">
+              <p>Plik: {{ saved_chroma_path }}</p>
             </div>
           </div>
         </article>
@@ -146,7 +147,8 @@
           <h3 class="card-title">Mel-spektrogram</h3>
           <div class="card-desc">
             <div class="h-64 w-full bg-neutral-100 flex items-center justify-center rounded-md">
-              [MELSPEC IMG]
+              <img src="{{ mel_img_src }}" alt="Mel spectrogram" style="max-width:100%;border-radius:10px;">
+              <p>Plik: {{ mel_image_path }}</p>
             </div>
           </div>
         </article>

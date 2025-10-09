@@ -4,6 +4,7 @@ import hashlib
 from datetime import datetime
 from werkzeug.utils import secure_filename
 import sqlite3
+
 def save_uploaded_wav(file, upload_dir):
     """
     Zapisuje przesłany plik WAV na dysku.
@@ -15,17 +16,26 @@ def save_uploaded_wav(file, upload_dir):
     os.makedirs(upload_dir, exist_ok=True)
 
     original_file_name = secure_filename(file.filename)
-    #hashed name generating
+    # hashed name generating
     content = file.read() if hasattr(file, "read") else file
     file.seek(0) if hasattr(file, "seek") else None
-    file_hash = hashlib.sha256(content).hexdigest()[:16]
-    safe_name = f"{datetime.now().strftime('%Y%m%d_%H%M%S')}_{file_hash}.wav"
+
+    timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+    file_hash = hashlib.sha256(content + timestamp.encode()).hexdigest()[:16]
+
+    safe_name = f"{timestamp}_{file_hash}.wav"
     save_path = os.path.join(upload_dir, safe_name)
+
+    base, ext = os.path.splitext(save_path)
+    counter = 1
+    while os.path.exists(save_path):
+        save_path = f"{base}_{counter}{ext}"
+        counter += 1
+
     # for deduplication 
     sha256 = file_hash
-    
 
-    # File save sive 
+    # File save
     with open(save_path, "wb") as f:
         f.write(content)
 
