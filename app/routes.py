@@ -3,7 +3,8 @@ from flask import render_template, request, Flask
 from data.static_data_collectors.data_extractors import Extractors
 from data_models.training.CNN_GTZAN.GTZAN_model import MLP_gtzan
 from lib.file_save import save_uploaded_wav, insert_to_tracks
-from lib.save_plot import mel_to_disk_and_base64, chroma_to_disk_and_base64
+from lib.save_plot import mel_to_disk_and_base64, chroma_to_disk_and_base64, insert_to_plots
+from lib.find_melspec import find_melspec_with_track_id
 import librosa
 
 
@@ -49,7 +50,7 @@ def analyze():
     chroma_result = chroma_to_disk_and_base64(filepath, save_chroma_dir)
     saved_chroma_path = chroma_result["save_path"]
     chroma_img_src = chroma_result["img_src"]
-
+    
     # audio duration
     duration = librosa.get_duration(filename=filepath)
     duration = "%.2f" % duration
@@ -62,16 +63,19 @@ def analyze():
     save_dir = "/home/ciona/projects/RCOLM/data_models/saved/gtzan_v1"
 
     # TODO: zmienić na dynamiczny link do bazy
-    image_path = "/home/ciona/projects/RCOLM/tests/png/blue_train.png"
+    mel_image_path = saved_mel_path
 
     # loading model with metadata 
     model, meta = MLP_gtzan.load_model(save_dir)
     mime = original_name.split(".")[1]
-
+    
     # activating prediction function
-    genre_predictions = MLP_gtzan.predict_from_path(model, meta, image_path)
-    insert_to_tracks(original_name, filepath, mime, sr, duration, sha256, scale)
-
+    genre_predictions = MLP_gtzan.predict_from_path(model, meta, mel_image_path)
+    track_id = insert_to_tracks(original_name, filepath, mime, sr, duration, sha256, scale)
+  
+    insert_to_plots(track_id, saved_mel_path, "mel")
+    insert_to_plots(track_id, saved_chroma_path, "chroma")
+    
     #  przekazujemy mel_img_src do szablonu HTML
     return render_template(
         "results.html",

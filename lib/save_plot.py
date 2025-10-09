@@ -6,6 +6,8 @@ import numpy as np
 import librosa
 import librosa.display
 import matplotlib.pyplot as plt
+import sqlite3
+
 
 def mel_to_disk_and_base64(
     audio_path: str,
@@ -52,6 +54,9 @@ def mel_to_disk_and_base64(
     buf.close()
 
     img_src = f"data:image/png;base64,{img_base64}"
+
+
+    
     return {"save_path": save_path, "img_src": img_src}
 
 
@@ -115,3 +120,27 @@ def chroma_to_disk_and_base64(
 
     img_src = f"data:image/png;base64,{img_base64}"
     return {"save_path": save_path, "img_src": img_src}
+
+
+def insert_to_plots(track_id, plot_path, plot_type, db_name="db/database.db"):
+    conn = sqlite3.connect(db_name, timeout=10)
+    cur = conn.cursor()
+    cur.execute("PRAGMA journal_mode=WAL;")
+    cur.execute("PRAGMA synchronous=NORMAL;")
+    try:
+        cur.execute("""
+        Insert into plots(
+        track_id,
+        plot_path,
+        plot_type
+        )
+        VALUES(?,?,?)
+        """,(track_id, plot_path, plot_type))
+        conn.commit()
+
+    except sqlite3.OperationalError as e:
+        print("❌ Błąd bazy danych:", e)
+        raise 
+    finally:
+        conn.close()
+        

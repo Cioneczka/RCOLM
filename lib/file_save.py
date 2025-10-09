@@ -69,10 +69,12 @@ def insert_to_tracks(original_name, storage_path, mime, sr, duration_sec, sha256
         """, (original_name, storage_path, mime, sr, duration_sec, sha256, mode))
 
         conn.commit()
+        track_id = cur.lastrowid
     except sqlite3.OperationalError as e:
         print("❌ Błąd bazy danych:", e)
         raise
     finally:
         conn.close()
+    return track_id
 
 
