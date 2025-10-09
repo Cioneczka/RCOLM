@@ -1,7 +1,7 @@
 
 import sqlite3
 
-def init_db(db_name="database.db"):
+def init_db(db_name="music_analysisrdb"):
     conn = sqlite3.connect(db_name)
     cur = conn.cursor()
 

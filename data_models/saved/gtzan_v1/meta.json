@@ -1,0 +1,17 @@
+{
+  "genre_names": [
+    "blues",
+    "classical",
+    "country",
+    "disco",
+    "hiphop",
+    "jazz",
+    "metal",
+    "pop",
+    "reggae",
+    "rock"
+  ],
+  "image_width": 128,
+  "image_height": 128,
+  "expects_softmax": true
+}
