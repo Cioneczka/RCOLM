@@ -11,9 +11,6 @@
         <h1 class="hero-title">
           RCOLM <span class="text-accent">– analiza audio</span>
         </h1>
-        <p class="hero-sub">
-<a href="/" class="mobile-link" >
-        </p>
 
 
 
@@ -30,7 +27,9 @@
       <!-- DUŻY CENTRALNY DIV NA WYKRES JS -->
       <div id="live-chart"
            class="w-full max-w-5xl mx-auto aspect-video rounded-2xl shadow-lg border border-neutral-200 dark:border-neutral-800 bg-white dark:bg-neutral-900 flex items-center justify-center">
-        <span class="opacity-60 text-sm">[WYKRES LIVE]</span>
+          <div>
+            <canvas id = "main_chart">
+          </div>
       </div>
     </div>
   </section>
@@ -184,5 +183,10 @@
       </div>
     </div>
   </section>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
 {% endblock %}
+
+
 
