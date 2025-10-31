@@ -21,7 +21,7 @@
   <!-- LIVE CHART CENTER -->
   <section id="live" class="section">
     <div class="wrap">
-      <h2 class="features-title text-center mb-2">Podgląd na żywo</h2>
+      <h2 class="features-title text-center mb-2">Visual representation of a song</h2>
       <p class="features-lead text-center mb-8">Miejsce na wykres w JS (np. live chroma / waveform / widmo).</p>
 
       <!-- DUŻY CENTRALNY DIV NA WYKRES JS -->
@@ -38,18 +38,18 @@
   <section id="results" class="section">
     <div class="wrap">
       <div class="features-head">
-        <h2 class="features-title">Wyniki analizy</h2>
-        <p class="features-lead">Poniżej znajdziesz wszystkie wyekstrahowane cechy oraz wyniki modeli.</p>
+        <h2 class="features-title">Results</h2>
+        <p class="features-lead">Extracted spectograms, data and model predictions are below</p>
       </div>
 
       <!-- Top meta + podstawowe info -->
       <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
         <article class="card">
-          <h3 class="card-title">Metadane pliku &#x2611;	</h3>
+          <h3 class="card-title">File metadata &#x2611;	</h3>
           <div class="card-desc space-y-1">
-            <p><b>Nazwa:</b> {{original_name}}</p>
-            <p><b>Czas trwania:</b> {{duration}}s</p>
-            <p><b>Próbkowanie:</b> {{sr}}Hz</p>
+            <p><b>File name:</b> {{original_name}}</p>
+            <p><b>Duration:</b> {{duration}}s</p>
+            <p><b>Frequency:</b> {{sr}}Hz</p>
             <p><b>Format:</b> {{mime}}</p>
           </div>
         </article>
@@ -63,11 +63,11 @@
         </article>
 
         <article class="card">
-          <h3 class="card-title">Tempo i metrum</h3>
+          <h3 class="card-title">Tempo and metrum</h3>
           <div class="card-desc space-y-1">
             <p><b>Tempo (BPM):</b> {{tempo}}</p>
             <p><b>Metrum:</b></p>
-            <p><b>Głośność:</b></p>
+            <p><b>Volume mean:</b></p>
           </div>
         </article>
       </div>
@@ -75,7 +75,7 @@
       <!-- Spotify-like features + wyniki modeli -->
       <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mt-6">
         <article class="card">
-          <h3 class="card-title">Cechy percepcyjne</h3>
+          <h3 class="card-title">Perception features</h3>
           <div class="card-desc grid grid-cols-2 gap-3 text-sm">
             <p><b>Valence:</b></p>
             <p><b>Energy:</b></p>
@@ -90,7 +90,7 @@
 
         <!-- TUTAJ TRZEBA POPRAWIC WYSWIETLANIE -->
         <article class="card">
-          <h3 class="card-title">Przypisane gatunki</h3>
+          <h3 class="card-title">CNN model genre predictions:</h3>
           <div class="card-desc space-y-1">
         {% for genre, prob in genre_predictions %}
         <tr>
@@ -102,7 +102,7 @@
         </article>
 
         <article class="card">
-          <h3 class="card-title">Podsumowanie chromy</h3>
+          <h3 class="card-title">Chroma </h3>
           <div class="card-desc">
             <p class="mb-2 text-sm opacity-80">Średnia chroma (12 klas wysokości):</p>
             <ul class="grid grid-cols-2 gap-1 text-sm">

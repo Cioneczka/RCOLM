@@ -27,5 +27,5 @@ build/
 *.db*
 *.init  
 __*.py
-
+*.mp4
 

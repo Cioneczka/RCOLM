@@ -2,7 +2,7 @@ from flask import Blueprint
 from flask import render_template, request, Flask
 from data.static_data_collectors.data_extractors import Extractors
 from data_models.training.CNN_GTZAN.GTZAN_model import MLP_gtzan
-from lib.file_save import save_uploaded_wav, insert_to_tracks
+from lib.file_save import Gtzan_db
 from lib.save_plot import mel_to_disk_and_base64, chroma_to_disk_and_base64, insert_to_plots
 from lib.find_melspec import find_melspec_with_track_id
 import librosa
@@ -37,7 +37,7 @@ def analyze():
 
     save_input_file_path = "/home/ciona/projects/RCOLM/data/input/wavs/"
     file = request.files["file"]
-    filepath, original_name, sha256 = save_uploaded_wav(file, save_input_file_path)
+    filepath, original_name, sha256 = Gtzan_db.save_uploaded_wav(file, save_input_file_path)
 
     #  Generating melspectogram, saving it on disk and in db + return to result template
     save_mel_dir = "/home/ciona/projects/RCOLM/data/input/plots/mel"
@@ -60,7 +60,7 @@ def analyze():
     key, scale = Extractors.key_extractor(filepath)
 
     # machine learning model
-    save_dir = "/home/ciona/projects/RCOLM/data_models/saved/gtzan_v1"
+    save_dir = "/home/ciona/projects/RCOLM/data_models/saved/gtzan_v1/"
 
     # TODO: zmienić na dynamiczny link do bazy
     mel_image_path = saved_mel_path
@@ -71,8 +71,8 @@ def analyze():
     
     # activating prediction function
     genre_predictions = MLP_gtzan.predict_from_path(model, meta, mel_image_path)
-    track_id = insert_to_tracks(original_name, filepath, mime, sr, duration, sha256, scale)
-  
+    track_id = Gtzan_db.insert_to_tracks(original_name, filepath, mime, sr, duration, sha256, scale)
+
     insert_to_plots(track_id, saved_mel_path, "mel")
     insert_to_plots(track_id, saved_chroma_path, "chroma")
     
