@@ -8,30 +8,25 @@ class MyModels:
 
             layers.Conv2D(16, (3, 3), activation='relu'),
             layers.BatchNormalization(),
+            layers.Activation('relu'), 
             layers.MaxPooling2D((2, 2)),
             
             layers.Conv2D(32, (3, 3), activation='relu'),
             layers.BatchNormalization(),
+            layers.Activation('relu'),
             layers.MaxPooling2D((2, 2)),
             
-            layers.Conv2D(32, (3, 3), activation='relu'),
+            layers.Conv2D(64, (3, 3), activation='relu'),
             layers.BatchNormalization(),
+            layers.Activation('relu'),
             layers.MaxPooling2D((2, 2)),
-            
-#             layers.Conv2D(32, (3, 3), activation='relu'),
-#             layers.BatchNormalization(),
-#             layers.MaxPooling2D((2, 2)),
 
-            layers.Flatten(),
-            
-            layers.Dense(32, activation='relu'),
-            layers.Dropout(0,1),
 
-            layers.Dense(32, activation='relu'),
-            layers.Dropout(0,1),
-
-            layers.Dense(num_classes, activation='softmax'),  # głowa klasyfikacyjna
+            layers.GlobalAveragePooling2D(),
+            layers.Dropout(0.35),
+            layers.Dense(num_classes, activation='softmax')  # głowa klasyfikacyjna
         ])
+         
 
         return model
 

@@ -102,7 +102,7 @@ class MLP_gtzan:
         history = model.fit(
             X_train_np, y_train_np,
             epochs=60,
-            batch_size=16,
+            batch_size=32,
             validation_data=(X_test_np, y_test_np),
             callbacks=[tf.keras.callbacks.TerminateOnNaN()]
         )
@@ -112,6 +112,7 @@ class MLP_gtzan:
         plt.plot(history.history['val_accuracy'], label='Val')
         plt.xlabel('Epoch'); plt.ylabel('Accuracy'); plt.title('Training & Validation')
         plt.legend(); plt.grid(True); plt.show()
+        model.summary()
         return model, history
 
     #MODEL HANDLERS
@@ -183,11 +184,10 @@ gtzan_path = "/home/ciona/projects/RCOLM/data/converted_data/GTZAN/"
 save_dir =  "/home/ciona/projects/RCOLM/data_models/saved/gtzan_v1"
 image_path = "/home/ciona/projects/RCOLM/tests/png/blue_train.png"
 
-# X_train, X_test, y_train, y_test, genre_names = MLP_gtzan.train_test_split_gtzan(gtzan_path)
-# num_classes = len(genre_names)
-# model = MyModels.CNN_model(num_classes)
-# model, history = MLP_gtzan.CNN_train(X_train, X_test, y_train, y_test, genre_names, model)
-# MLP_gtzan.save_model(model, genre_names, save_dir)
-
-model, meta = MLP_gtzan.load_model(save_dir)
-MLP_gtzan.predict_from_path(model, meta, image_path)
+X_train, X_test, y_train, y_test, genre_names = MLP_gtzan.train_test_split_gtzan(gtzan_path)
+num_classes = len(genre_names)
+model = MyModels.CNN_model(num_classes)
+model, history = MLP_gtzan.CNN_train(X_train, X_test, y_train, y_test, genre_names, model)
+#MLP_gtzan.save_model(model, genre_names, save_dir)
+# model, meta = MLP_gtzan.load_model(save_dir)
+# MLP_gtzan.predict_from_path(model, meta, image_path)
