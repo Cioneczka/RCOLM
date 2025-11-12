@@ -10,6 +10,12 @@ from sklearn.preprocessing import LabelEncoder
 from pathlib import Path
 import json
 
+
+from tensorflow.keras import Model
+from sklearn.decomposition import PCA
+from sklearn.manifold import TSNE
+
+
 # GPU: bardziej stabilnie
 gpus = tf.config.list_physical_devices('GPU')
 for g in gpus:
@@ -92,10 +98,21 @@ class MLP_gtzan:
         y_train_np = np.asarray(y_train)
         y_test_np  = np.asarray(y_test)
 
+        optimizer = tf.keras.optimizers.Adam(learning_rate=3e-4, clipnorm=1.0)
+
+        callbacks = [
+            tf.keras.callbacks.ModelCheckpoint("best.weights.h5", monitor="val_loss",
+                                            save_best_only=True, save_weights_only=True),
+            tf.keras.callbacks.ReduceLROnPlateau(monitor="val_loss", factor=0.5,
+                                                patience=3, min_lr=1e-6),
+            tf.keras.callbacks.EarlyStopping(monitor="val_loss", patience=8,
+                                            restore_best_weights=True)
+        ]
+
         # softmax -> from_logits=False
         model.compile(
-            optimizer='adam',
-            loss=tf.keras.losses.SparseCategoricalCrossentropy(from_logits=False),
+            optimizer=optimizer,
+            loss=tf.keras.losses.SparseCategoricalCrossentropy(from_logits=True),
             metrics=['accuracy']
         )
 
@@ -104,8 +121,10 @@ class MLP_gtzan:
             epochs=60,
             batch_size=32,
             validation_data=(X_test_np, y_test_np),
-            callbacks=[tf.keras.callbacks.TerminateOnNaN()]
+            callbacks=callbacks
         )
+
+
 
         plt.figure(figsize=(8, 6))
         plt.plot(history.history['accuracy'], label='Train')
@@ -188,6 +207,37 @@ X_train, X_test, y_train, y_test, genre_names = MLP_gtzan.train_test_split_gtzan
 num_classes = len(genre_names)
 model = MyModels.CNN_model(num_classes)
 model, history = MLP_gtzan.CNN_train(X_train, X_test, y_train, y_test, genre_names, model)
+
+
+_ = model.predict(MLP_gtzan.load_and_preprocess_images(X_test[:1]), verbose=0)
+
+# Stwórz model cech
+feature_extractor = Model(
+    inputs=model.inputs,
+    outputs=model.layers[-3].output  # warstwa przed Dense
+)
+
+# Przetwórz dane testowe
+X_test_np = MLP_gtzan.load_and_preprocess_images(X_test)
+X_features = feature_extractor.predict(X_test_np, verbose=1)
+y_labels = np.array(y_test)
+
+# Redukcja wymiarów (PCA + t-SNE)
+pca = PCA(n_components=50).fit_transform(X_features)
+X_embedded = TSNE(n_components=2, perplexity=30, init='pca', learning_rate='auto').fit_transform(pca)
+
+# Scatter plot
+plt.figure(figsize=(10, 8))
+scatter = plt.scatter(X_embedded[:, 0], X_embedded[:, 1], c=y_labels, cmap='tab10', alpha=0.7)
+plt.colorbar(scatter, ticks=range(len(genre_names)), label='Genre index')
+handles, _ = scatter.legend_elements()
+plt.legend(handles, genre_names, title="Gatunki", bbox_to_anchor=(1.05, 1), loc='upper left')
+plt.title("🎵 Wizualizacja utworów GTZAN (t-SNE z cech CNN)")
+plt.xlabel("Wymiar 1")
+plt.ylabel("Wymiar 2")
+plt.grid(True)
+plt.tight_layout()
+plt.show()
 #MLP_gtzan.save_model(model, genre_names, save_dir)
 # model, meta = MLP_gtzan.load_model(save_dir)
 # MLP_gtzan.predict_from_path(model, meta, image_path)

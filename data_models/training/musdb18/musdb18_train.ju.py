@@ -2,8 +2,8 @@
 import musdb
 import os
 from musdb.audio_classes import MultiTrack
-from lib.file_save import  Musdb18_save, Gtzan_db
-
+from lib.file_save import  Gtzan_db
+import soundfile as sf
 
 
 
@@ -32,16 +32,9 @@ mus = musdb.DB(
 )
 track = mus.tracks[0]  # lub next(t for t in mus if t.name == "Al James - Schoolboy Facination")
 
-track.targets.keys()
+print(track.targets.keys())
 
-save = Musdb18_save()
-for root, dirs, files in os.walk(musdb_path):
-    for file_name in files:
-        file_path=os.path.join(root, file_name)
-        track_id = insert_to_tracks  
-
-        print(f"File {file_path} saved \n")    
-    
-
-
-
+vocal_audio = track.sources['vocals'].audio
+mixture_audio = track.sources['mixture'].audio
+sr = track.rate
+ 
