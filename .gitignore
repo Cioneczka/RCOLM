@@ -26,6 +26,6 @@ build/
 *.png
 *.db*
 *.init  
-__*.py
 *.mp4
-
+__*.py
+*.npz

@@ -29,7 +29,6 @@ import sys
 sys.path.append("/home/ciona/projects/RCOLM/data_models/MyModels/")
 from mymodels import MyModels
 tf.config.set_visible_devices([], 'GPU')
-import os
 os.environ["CUDA_VISIBLE_DEVICES"] = "-1"   # całkowicie wyłącz GPU
 # %%
 class MLP_gtzan:
