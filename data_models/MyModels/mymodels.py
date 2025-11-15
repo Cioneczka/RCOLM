@@ -19,13 +19,13 @@ class MyModels:
             layers.MaxPooling2D((2, 2)),
  
 
-            layers.Flatten() 
-            layers.Dropout(0.35)
-            layers.Dense(64, activation='relu)
+            layers.Flatten(), 
+            layers.Dropout(0.35),
+            layers.Dense(64, activation='relu'),
             layers.Dense(num_classes, activation='softmax'),  # głowa klasyfikacyjna
 
         ])
-         
+       
 
         return model
 
