@@ -140,23 +140,26 @@ class DataPrep:
         X = np.stack(self.X_list, axis=0)
         Y = np.stack(self.Y_list, axis=0)
 
-        # convert to TF tensors
-        X_tf = tf.convert_to_tensor(X, dtype=tf.float32)
-        Y_tf = tf.convert_to_tensor(Y, dtype=tf.float32)
-
-        return X_tf, Y_tf
-
-
-
+        return X, Y
     def save_data(self, path="/home/ciona/projects/RCOLM/data/raw_data/musdb18/dataset"):
         X, Y = self.build()
         np.savez_compressed(path, X=X, Y=Y)
         print("Zapisano dataset:", path)
         
 
-dp = DataPrep(dataset_path = "/home/ciona/projects/RCOLM/data/raw_data/musdb18")
+# dp = DataPrep(dataset_path = "/home/ciona/projects/RCOLM/data/raw_data/musdb18")
+# 
+# dp.save_data()
 
-dp.save_data()
 
 
+data = np.load("/home/ciona/projects/RCOLM/data/raw_data/musdb18/dataset/dataset.npz")
+
+print(data.files)  # jakie są klucze? (np. ['X', 'Y'])
+
+X = data["X"]
+Y = data["Y"]
+
+print("X shape:", X.shape)
+print("Y shape:", Y.shape)
 
