@@ -28,7 +28,7 @@ class MyModels:
         ])
         return model
 
-    # ---------- UNET ----------
+        # ---------- UNET ----------
 
     @staticmethod
     def unet_conv_block(x, ch, k=(3, 3)):
@@ -44,36 +44,29 @@ class MyModels:
     def build_unet(input_shape, num_bins=1):
         inp = layers.Input(shape=input_shape)
 
-        # Encoder
-        c1 = MyModels.unet_conv_block(inp, 32)
-        p1 = layers.MaxPooling2D((2, 2))(c1)
+        # ------- Encoder (3 poziomy) -------
+        c1 = MyModels.unet_conv_block(inp, 32)      # 360 x 216
+        p1 = layers.MaxPooling2D((2, 2))(c1)        # 180 x 108
 
-        c2 = MyModels.unet_conv_block(p1, 64)
-        p2 = layers.MaxPooling2D((2, 2))(c2)
+        c2 = MyModels.unet_conv_block(p1, 64)       # 180 x 108
+        p2 = layers.MaxPooling2D((2, 2))(c2)        # 90 x 54
 
-        c3 = MyModels.unet_conv_block(p2, 128)
-        p3 = layers.MaxPooling2D((2, 2))(c3)
+        c3 = MyModels.unet_conv_block(p2, 128)      # 90 x 54
+        p3 = layers.MaxPooling2D((2, 2))(c3)        # 45 x 27
 
-        c4 = MyModels.unet_conv_block(p3, 256)
-        p4 = layers.MaxPooling2D((2, 2))(c4)
+        # ------- Bottleneck -------
+        b = MyModels.unet_conv_block(p3, 256)       # 45 x 27
 
-        # Latent
-        b = MyModels.unet_conv_block(p4, 364)
-
-        # Decoder
-        u4 = layers.UpSampling2D((2, 2))(b)
-        u4 = layers.Concatenate()([u4, c4])
-        u4 = MyModels.unet_conv_block(u4, 256)
-
-        u3 = layers.UpSampling2D((2, 2))(u4)
+        # ------- Decoder -------
+        u3 = layers.UpSampling2D((2, 2))(b)         # 90 x 54
         u3 = layers.Concatenate()([u3, c3])
         u3 = MyModels.unet_conv_block(u3, 128)
 
-        u2 = layers.UpSampling2D((2, 2))(u3)
+        u2 = layers.UpSampling2D((2, 2))(u3)        # 180 x 108
         u2 = layers.Concatenate()([u2, c2])
         u2 = MyModels.unet_conv_block(u2, 64)
 
-        u1 = layers.UpSampling2D((2, 2))(u2)
+        u1 = layers.UpSampling2D((2, 2))(u2)        # 360 x 216
         u1 = layers.Concatenate()([u1, c1])
         u1 = MyModels.unet_conv_block(u1, 32)
 
