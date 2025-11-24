@@ -31,7 +31,7 @@ class MyModels:
         # ---------- UNET ----------
 
     @staticmethod
-    def unet_conv_block(x, ch, k=(3, 3)):
+    def unet_conv_block(x, ch, k=(3, 7)):
         x = layers.Conv2D(ch, k, padding='same')(x)
         x = layers.BatchNormalization()(x)
         x = layers.ReLU()(x)
@@ -55,8 +55,10 @@ class MyModels:
         p3 = layers.MaxPooling2D((2, 2))(c3)        # 45 x 27
 
         # ------- Bottleneck -------
-        b = MyModels.unet_conv_block(p3, 256)       # 45 x 27
-
+        b = layers.Conv2D(512, (3, 3), padding='same', dilation_rate=(1, 2))(p3)
+        b = layers.BatchNormalization()(b)
+        b = layers.ReLU()(b)
+        b = layers.Dropout(0.3)(b)
         # ------- Decoder -------
         u3 = layers.UpSampling2D((2, 2))(b)         # 90 x 54
         u3 = layers.Concatenate()([u3, c3])
@@ -70,7 +72,7 @@ class MyModels:
         u1 = layers.Concatenate()([u1, c1])
         u1 = MyModels.unet_conv_block(u1, 32)
 
-        out = layers.Conv2D(num_bins, (1, 1), activation='sigmoid')(u1)
+        out = layers.Conv2D(num_bins, (1, 1), activation=None)(u1)
 
         return models.Model(inp, out, name='Unet_multiF0')
 

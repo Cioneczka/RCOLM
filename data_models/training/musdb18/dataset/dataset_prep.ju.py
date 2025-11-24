@@ -5,7 +5,6 @@ import numpy as np
 import tensorflow as tf
 import matplotlib.pyplot as plt 
 
-os.environ["CUDA_VISIBLE_DEVICES"] = "-1"   
 # %%
 
 
@@ -21,7 +20,7 @@ class DataPrep:
 
     def __init__(self,
                  dataset_path,
-                 segment_duration=5.0,
+                 segment_duration=30,
                  sr=44100,
                  hop_length=1024,
                  fmin=32.7,
@@ -95,7 +94,7 @@ class DataPrep:
 
         # --- dalej Twoje segmentowanie i CQT ---
                 # load
-                mix, sr = librosa.load(mix_path, sr=self.sr, mono=True)
+                mix, sr = librosa.load(mix_path, sr=self.sr, mono=True) 
                 bass,_   = librosa.load(bass_path,   sr=self.sr, mono=True)
                 drums,_  = librosa.load(drums_path,  sr=self.sr, mono=True)
                 other,_  = librosa.load(other_path,  sr=self.sr, mono=True)
@@ -147,19 +146,19 @@ class DataPrep:
         print("Zapisano dataset:", path)
         
 
-# dp = DataPrep(dataset_path = "/home/ciona/projects/RCOLM/data/raw_data/musdb18")
+dp = DataPrep(dataset_path = "/home/ciona/projects/RCOLM/data/raw_data/musdb18")
+ 
+dp.save_data()
+
+
+
+# data = np.load("/home/ciona/projects/RCOLM/data/raw_data/musdb18/dataset/dataset.npz")
 # 
-# dp.save_data()
-
-
-
-data = np.load("/home/ciona/projects/RCOLM/data/raw_data/musdb18/dataset/dataset.npz")
-
-print(data.files)  # jakie są klucze? (np. ['X', 'Y'])
-
-X = data["X"]
-Y = data["Y"]
-
-print("X shape:", X.shape)
-print("Y shape:", Y.shape)
-
+# print(data.files)  # jakie są klucze? (np. ['X', 'Y'])
+# 
+# X = data["X"]
+# Y = data["Y"]
+# 
+# print("X shape:", X.shape)
+# print("Y shape:", Y.shape)
+# 
