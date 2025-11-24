@@ -55,12 +55,7 @@ class Train:
         print("X shape:", X.shape)
         print("y shape:", y.shape)
 
-        # normalizacja z [-80, 0] do [0, 1]
-        X += 80
-        X /= 80
-        y += 80
-        y /= 80
-        
+
 
         # Wejściowy kształt (np. 360x216x1)
         H, W, C_in = X.shape[1], X.shape[2], X.shape[3]
@@ -136,8 +131,7 @@ class Train:
 # %%
 model_path = "/home/ciona/projects/RCOLM/data_models/saved/musdb18/"
 # show_pred_vs_true(model, X_test, y_test, sample_idx=5, stem_idx=2)
-model = MyModels.build_unet((360, 216, 1), num_bins = 4)
-Train.training()
+model  = Train.training()
 Train.save_model(model, model_path)
 FLOOR_DB = -80.0
 
