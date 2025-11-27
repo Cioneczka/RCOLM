@@ -47,7 +47,7 @@ class Train:
 
     @staticmethod
     def training():
-        DATA_PATH = "/home/ciona/projects/RCOLM/data/raw_data/musdb18/dataset/dataset_5_s.npz"
+        DATA_PATH = "/home/ciona/projects/RCOLM/data/raw_data/musdb18/dataset/dataset.npz"
         data = np.load(DATA_PATH)
         X = data["X"].astype("float32")
         y = data["Y"].astype("float32")
@@ -68,21 +68,14 @@ class Train:
         model = MyModels.build_unet(input_shape, num_bins=C_out)
         model.compile(
             optimizer='adam',
-            loss='mse',
+            loss='mae',
             metrics=[
                 tf.keras.metrics.MeanSquaredError(name="mse"),
                 tf.keras.metrics.MeanAbsoluteError(name="mae"),
             ],
         )
 
-        # train dataset cutting for better testing 
-        ratio = 1.0
-        n = X.shape[0]
-        n_subset = int(n * ratio)
 
-        idx = np.random.permutation(n)[:n_subset]  # losowe indeksy
-        X = X[idx]
-        y = y[idx]
 
         print("Dataset fragment:")
         print("X shape:", X.shape)
@@ -94,7 +87,7 @@ class Train:
         # po przycięciu trzeba zaktualizować n
         n = X.shape[0]
 
-        chunk_size = 500
+        chunk_size = 100
         epochs_per_chunk = 20
         FLOOR_DB = -80
         for start in range(0, n, chunk_size):
@@ -214,87 +207,6 @@ history = model.fit(
 
 # %%
 
-
-import numpy as np
-import tensorflow as tf
-import matplotlib.pyplot as plt
-
-def load_data_npz(path):
-    data = np.load(path)
-    X = data["X"].astype(np.float32)
-    Y = data["Y"].astype(np.float32)
-    return X, Y
-
-def load_model(path):
-    return tf.keras.models.load_model(path, compile=False)
-
-def denormalize_db(norm):
-    """Odwrócenie normalizacji z [0,1] → [-80,0] dB."""
-    return norm * 80.0 - 80.0
-
-def plot_comparison(model_path, data_path, sample_idx=0, stem_idx=0):
-    # 1. Wczytaj model
-    print("Ładowanie modelu…")
-    model = load_model(model_path)
-
-    # 2. Wczytaj X i Y z dysku
-    print("Ładowanie danych…")
-    X, Y = load_data_npz(data_path)
-
-    # 3. Pobierz jedną próbkę
-    x = X[sample_idx:sample_idx+1]   # (1, H, W, 1)
-    y_true = Y[sample_idx]           # (H, W, 4)
-
-    # 4. Predykcja
-    print("Predykcja modelu…")
-    y_pred = model.predict(x, verbose=0)[0]
-
-    # 5. Wybierz konkretny stem
-    true_map = y_true[..., stem_idx]
-    pred_map = y_pred[..., stem_idx]
-
-    # 6. Denormalizacja z [0,1] → [-80,0] dB
-    true_db = denormalize_db(true_map)
-    pred_db = denormalize_db(pred_map)
-
-    print("stem min/max:", Y[sample_idx, ..., stem_idx].min(), Y[sample_idx, ..., stem_idx].max())
-        # 7. Wykres
-    plt.figure(figsize=(10, 4))
-
-    plt.subplot(1, 2, 1)
-    plt.imshow(true_db.T, origin="lower", aspect="auto", cmap="magma", vmin=-80, vmax=0)
-    plt.title(f"Ground Truth – stem {stem_idx}")
-    plt.xlabel("czas")
-    plt.ylabel("częstotliwość")
-    plt.colorbar(fraction=0.046)
-
-    plt.subplot(1, 2, 2)
-    plt.imshow(pred_db.T, origin="lower", aspect="auto", cmap="magma", vmin=-80, vmax=0)
-    plt.title(f"Model Prediction – stem {stem_idx}")
-    plt.xlabel("czas")
-    plt.ylabel("częstotliwość")
-    plt.colorbar(fraction=0.046)
-
-    plt.tight_layout()
-    plt.show()
-
-
-if __name__ == "__main__":
-    model_path = "/home/ciona/projects/RCOLM/data_models/saved/musdb18/unet_model2025-11-24 13:40:34.851414.h5"
-    data_path  = "/home/ciona/projects/RCOLM/data/raw_data/musdb18/dataset/dataset_5_s.npz"
-
-    plot_comparison(
-        model_path=model_path,
-        data_path=data_path,
-        sample_idx=0,       # zmieniaj dowolnie
-        stem_idx=0          # wybierz stem: 0,1,2,3
-    )
-
-
-
-
-
-# %% 
 """ na szybko sklejona funkcja do testów  """
 import os
 import numpy as np
@@ -313,9 +225,10 @@ def to_db(norm):
 # ---------------------------------------------------------------
 #  GŁÓWNA FUNKCJA
 # ---------------------------------------------------------------
+
 def split_wav_into_stems(model_path, wav_path, out_dir,
-                          patch_h=360, patch_w=216,
-                          hop=216, sr=44100):
+                          patch_h=360, patch_w=1288,
+                          hop=1288, sr=44100):   # <<< hop = 1288
 
     print("Ładowanie modelu…")
     model = tf.keras.models.load_model(model_path, compile=False)
@@ -324,64 +237,46 @@ def split_wav_into_stems(model_path, wav_path, out_dir,
     audio, sr = librosa.load(wav_path, sr=sr, mono=True)
 
     print("Liczenie STFT…")
-    S = librosa.stft(audio, n_fft=1024, hop_length=512)
+    S = librosa.stft(audio, n_fft=2048, hop_length=1024)  # <<< 2048, 1024
     mag = np.abs(S)
     phase = np.angle(S)
 
-    # konwersja na dB [-80,0]
     S_db = librosa.amplitude_to_db(mag, ref=1.0, top_db=80)
-
-    H, W = S_db.shape  # np. (1025, ~600)
+    H, W = S_db.shape
     print("Wymiary spektrogramu:", S_db.shape)
 
-    # ---------------------------
-    # Podział na okna
-    # ---------------------------
     patches = []
     positions = []
 
     for t in range(0, W - patch_w + 1, hop):
-        patch = S_db[:, t:t+patch_w]   # (1025,216)
-        patch = patch[:patch_h]        # ucinasz do 360 tak jak w dataset
-        patch = patch[..., None]       # (360,216,1)
+        patch = S_db[:patch_h, t:t+patch_w]  # <<< identyczny slicing jak w DataPrep
+        patch = patch[..., None]
         patches.append(patch)
         positions.append(t)
 
     patches = np.array(patches, dtype=np.float32)
-    patches = to_norm(patches)         # normalizacja taka jak w training
+    patches = to_norm(patches)
 
     print("Patchy do przetworzenia:", len(patches))
-
-    # ---------------------------
-    # Predykcja
-    # ---------------------------
     print("Przepuszczam przez model…")
     preds = model.predict(patches, batch_size=2, verbose=1)
 
-    # pred shape: (N,360,216,4)
     preds_db = to_db(preds)
 
-    # ---------------------------
-    # Składanie wynikowego spectrogramu 4 stemów
-    # ---------------------------
-    stems_mag = [np.zeros((H, W)) for _ in range(4)]
-    count = np.zeros(W)
+    stems_mag = [np.zeros((H, W), dtype=np.float32) for _ in range(4)]
+    count = np.zeros(W, dtype=np.float32)
 
     for (t, pred) in zip(positions, preds_db):
         for s in range(4):
-            patch_db = pred[..., s]              # (360,216)
-            full_db = np.zeros((H, patch_w)) - 80
-            full_db[:patch_h] = patch_db
+            patch_db = pred[..., s]                 # (360,1288)
+            full_db = np.zeros((H, patch_w)) - 80.0
+            full_db[:patch_h, :] = patch_db
             stems_mag[s][:, t:t+patch_w] += librosa.db_to_amplitude(full_db)
         count[t:t+patch_w] += 1
 
-    # uśrednianie
-    count[count == 0] = 1
+    count[count == 0] = 1.0
     stems_mag = [m / count for m in stems_mag]
 
-    # ---------------------------
-    # ISTFT dla każdego stemu
-    # ---------------------------
     os.makedirs(out_dir, exist_ok=True)
     names = ["vocals", "drums", "bass", "other"]
 
@@ -390,21 +285,20 @@ def split_wav_into_stems(model_path, wav_path, out_dir,
     stems_audio = []
     for s, name in enumerate(names):
         complex_S = stems_mag[s] * np.exp(1j * phase)
-        audio_s = librosa.istft(complex_S, hop_length=512)
+        audio_s = librosa.istft(complex_S, hop_length=1024)
         stems_audio.append(audio_s)
-
 
     print("Gotowe.")
     return stems_audio
 
+model_path = "/home/ciona/projects/RCOLM/data_models/saved/musdb18/unet_model2025-11-25 15:46:24.041779.h5"
 
-model_path = "/home/ciona/projects/RCOLM/data_models/saved/musdb18/unet_model2025-11-20 16:27:23.608279.h5"
-
-wav_path   = "/home/ciona/projects/RCOLM/data/raw_data/musdb18/train/Actions - Devil's Words/mixture.wav"
+wav_path   = "/home/ciona/projects/RCOLM/tests/marley.wav"
 out_dir    = "/home/ciona/projects/RCOLM/tests/"
 
 stems_audio = split_wav_into_stems(model_path, wav_path, out_dir)
 from IPython.display import Audio
 
-Audio(stems_audio[1], rate=44100)
+for stem in stems_audio:
+    display(Audio(stem, rate=44100))
 

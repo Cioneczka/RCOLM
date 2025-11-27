@@ -16,139 +16,122 @@ import matplotlib.pyplot as plt
 
 
 
-class DataPrep:
+
+class DataPrepSTFT:
 
     def __init__(self,
                  dataset_path,
                  segment_duration=30,
                  sr=44100,
+                 n_fft=2048,
                  hop_length=1024,
-                 fmin=32.7,
-                 n_bins=360,
-                 bins_per_octave=60):
+                 patch_h=360,
+                 patch_w=1288,
+                 hop_frames=1288):
 
         self.dataset_path = dataset_path
         self.segment_duration = segment_duration
         self.sr = sr
+        self.n_fft = n_fft
         self.hop_length = hop_length
-        self.fmin = fmin
-        self.n_bins = n_bins
-        self.bins_per_octave = bins_per_octave
+        self.patch_h = patch_h
+        self.patch_w = patch_w
+        self.hop_frames = hop_frames
 
-        # listy na dane
         self.X_list = []
         self.Y_list = []
 
     # -------------------------
-    #   HELPER: CQT
+    #   Helper: STFT → dB
     # -------------------------
-    def seg_to_cqt(self, y):
-        C = np.abs(librosa.cqt(
-            y=y,
-            sr=self.sr,
-            hop_length=self.hop_length,
-            fmin=self.fmin,
-            n_bins=self.n_bins,
-            bins_per_octave=self.bins_per_octave
-        ))
-        C_db = librosa.amplitude_to_db(C, ref=np.max)
-        return C_db
+    def to_db(self, audio):
+        S = librosa.stft(audio,
+                         n_fft=self.n_fft,
+                         hop_length=self.hop_length)
+        mag = np.abs(S)
+        S_db = librosa.amplitude_to_db(mag, ref=1.0, top_db=80)
+        return S_db
 
     # -------------------------
-    #   HELPER: normalizacja segmentu
-    # -------------------------
-    @staticmethod
-    def normalize_segment(y):
-        return y / (np.max(np.abs(y)) + 1e-9)
-
-    # -------------------------
-    #   GŁÓWNA METODA
+    #  GŁÓWNA METODA
     # -------------------------
     def build(self):
 
-        print(tf.__version__) 
-        for split in ["train", "test"]:  
+        for split in ["train", "test"]:
             split_path = os.path.join(self.dataset_path, split)
 
             for track_name in os.listdir(split_path):
                 track_path = os.path.join(split_path, track_name)
-
-                # musi być katalog z utworem
                 if not os.path.isdir(track_path):
                     continue
 
-                # lista plików w utworze
-                files = os.listdir(track_path)
-
-                # sprawdzamy czy są stem’y
-                if "mixture.wav" not in files:
+                if "mixture.wav" not in os.listdir(track_path):
                     continue
+                print(f"\n Loading track:{track_name}")
+                # Load audios
+                mix, _ = librosa.load(os.path.join(track_path, "mixture.wav"), sr=self.sr, mono=True)
+                bass,_ = librosa.load(os.path.join(track_path, "bass.wav"),    sr=self.sr, mono=True)
+                drums,_= librosa.load(os.path.join(track_path, "drums.wav"),   sr=self.sr, mono=True)
+                other,_= librosa.load(os.path.join(track_path, "other.wav"),   sr=self.sr, mono=True)
+                vocals,_=librosa.load(os.path.join(track_path, "vocals.wav"),  sr=self.sr, mono=True)
 
-                mix_path    = os.path.join(track_path, "mixture.wav")
-                bass_path   = os.path.join(track_path, "bass.wav")
-                drums_path  = os.path.join(track_path, "drums.wav")
-                other_path  = os.path.join(track_path, "other.wav")
-                vocals_path = os.path.join(track_path, "vocals.wav")
-
-                print("Przetwarzam:", track_path)
-
-        # --- dalej Twoje segmentowanie i CQT ---
-                # load
-                mix, sr = librosa.load(mix_path, sr=self.sr, mono=True) 
-                bass,_   = librosa.load(bass_path,   sr=self.sr, mono=True)
-                drums,_  = librosa.load(drums_path,  sr=self.sr, mono=True)
-                other,_  = librosa.load(other_path,  sr=self.sr, mono=True)
-                vocals,_ = librosa.load(vocals_path, sr=self.sr, mono=True)
-
-                # segmentation
                 segment_samples = int(self.segment_duration * self.sr)
                 num_segments = len(mix) // segment_samples
 
                 for seg_idx in range(num_segments):
-
                     start = seg_idx * segment_samples
                     stop = start + segment_samples
 
-                    # waveform segments
-                    mix_seg    = self.normalize_segment(mix[start:stop])
-                    bass_seg   = self.normalize_segment(bass[start:stop])
-                    drums_seg  = self.normalize_segment(drums[start:stop])
-                    other_seg  = self.normalize_segment(other[start:stop])
-                    vocals_seg = self.normalize_segment(vocals[start:stop])
+                    # Normalize segment
+                    peak = np.max(np.abs(mix[start:stop])) + 1e-9
 
-                    # CQT for each segment
-                    mix_cqt    = self.seg_to_cqt(mix_seg)
-                    bass_cqt   = self.seg_to_cqt(bass_seg)
-                    drums_cqt  = self.seg_to_cqt(drums_seg)
-                    other_cqt  = self.seg_to_cqt(other_seg)
-                    vocals_cqt = self.seg_to_cqt(vocals_seg)
+                    mix_seg    = mix[start:stop]    / peak
+                    bass_seg   = bass[start:stop]   / peak
+                    drums_seg  = drums[start:stop]  / peak
+                    other_seg  = other[start:stop]  / peak
+                    vocals_seg = vocals[start:stop] / peak
 
-                    # shape (n_bins, T, 1)
-                    X_seg = mix_cqt[..., np.newaxis]
+                    # STFT → dB
+                    mix_db    = self.to_db(mix_seg)
+                    bass_db   = self.to_db(bass_seg)
+                    drums_db  = self.to_db(drums_seg)
+                    other_db  = self.to_db(other_seg)
+                    vocals_db = self.to_db(vocals_seg)
 
-                    # shape (n_bins, T, 4)
-                    Y_seg = np.stack(
-                        [bass_cqt, drums_cqt, other_cqt, vocals_cqt],
-                        axis=-1
-                    )
+                    # -----------------------
+                    # Patchowanie (360 × 1288)
+                    # -----------------------
+                    H, W = mix_db.shape
 
-                    self.X_list.append(X_seg)
-                    self.Y_list.append(Y_seg)
+                    for t in range(0, W - self.patch_w + 1, self.hop_frames):
 
-        # stack all
+                        X_patch = mix_db[:self.patch_h, t:t+self.patch_w]
+                        Y_patch = np.stack([
+                            bass_db[:self.patch_h, t:t+self.patch_w],
+                            drums_db[:self.patch_h, t:t+self.patch_w],
+                            other_db[:self.patch_h, t:t+self.patch_w],
+                            vocals_db[:self.patch_h, t:t+self.patch_w]
+                        ], axis=-1)
+
+                        X_patch = X_patch[..., None]  # (360,1288,1)
+
+                        self.X_list.append(X_patch)
+                        self.Y_list.append(Y_patch)
+
         X = np.stack(self.X_list, axis=0)
         Y = np.stack(self.Y_list, axis=0)
-
         return X, Y
-    def save_data(self, path="/home/ciona/projects/RCOLM/data/raw_data/musdb18/dataset"):
-        X, Y = self.build()
-        np.savez_compressed(path, X=X, Y=Y)
-        print("Zapisano dataset:", path)
-        
 
-dp = DataPrep(dataset_path = "/home/ciona/projects/RCOLM/data/raw_data/musdb18")
+    def save_data(self, out_path):
+        X, Y = self.build()
+        print(f"Saving data...")
+        np.savez_compressed(out_path, X=X, Y=Y)
+        print("Dataset saved to:", out_path)
+
+
+dp = DataPrepSTFT(dataset_path = "/home/ciona/projects/RCOLM/data/raw_data/musdb18")
  
-dp.save_data()
+dp.save_data("/home/ciona/projects/RCOLM/data/raw_data/musdb18/dataset/dataset.npz")
 
 
 
