@@ -1,6 +1,4 @@
 @reference "tailwindcss";
-
-
 @layer components {
   /* Layout */
   .rcolm .wrap        { @apply mx-auto max-w-7xl px-6 lg:px-8; }

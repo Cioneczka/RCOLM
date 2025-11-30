@@ -1,192 +1,330 @@
 
 {% extends "base.html" %}
-{% block title %}Results{% endblock %}
+{% block title %}Results | RCOLM{% endblock %}
 
 {% block content %}
-  <!-- HEADER / HERO -->
-  <section class="hero">
-    <div class="hero-bg"></div>
-    <div class="wrap hero-box">
-      <div class="hero-left">
-        <h1 class="hero-title">
-          RCOLM <span class="text-accent">– analiza audio</span>
-        </h1>
+<main class="max-w-screen-xl mx-auto px-4 pt-24 pb-16 space-y-10">
 
+  <!-- GŁÓWNY NAGŁÓWEK -->
+  <section>
+    <h1 class="text-3xl md:text-4xl font-bold text-white mb-2">
+      Wyniki analizy audio
+    </h1>
+    <p class="text-gray-400">
+      Poniżej znajdziesz podstawowe informacje o pliku, wyniki modeli (tonacja, tempo, gatunek)
+      oraz wizualizacje spektrogramów.
+    </p>
+  </section>
 
+  <!-- SEKCJA Z WYKRESEM (CANVAS) -->
+  <section>
+    <div class="bg-gray-800 border border-gray-700 rounded-2xl p-5 md:p-6">
+      <div class="flex items-center justify-between mb-3">
+        <h2 class="text-xl font-semibold text-white">
+          Visual representation of a song
+        </h2>
+        <span class="text-xs uppercase tracking-wide text-gray-400">
+          Live chart / spektrogram / waveform
+        </span>
+      </div>
+      <p class="text-gray-400 text-sm mb-4">
+        To miejsce możesz wykorzystać na interaktywny wykres (Chart.js) – np. energię w czasie,
+        przebieg chroma lub inny widok analizy.
+      </p>
 
+      <div class="aspect-video rounded-xl border border-gray-700 bg-gray-900 flex items-center justify-center">
+        <canvas id="main_chart" class="w-full h-full"></canvas>
       </div>
     </div>
   </section>
 
-  <!-- LIVE CHART CENTER -->
-  <section id="live" class="section">
-    <div class="wrap">
-      <h2 class="features-title text-center mb-2">Visual representation of a song</h2>
-      <p class="features-lead text-center mb-8">Miejsce na wykres w JS (np. live chroma / waveform / widmo).</p>
-
-      <!-- DUŻY CENTRALNY DIV NA WYKRES JS -->
-      <div id="live-chart"
-           class="w-full max-w-5xl mx-auto aspect-video rounded-2xl shadow-lg border border-neutral-200 dark:border-neutral-800 bg-white dark:bg-neutral-900 flex items-center justify-center">
-          <div>
-            <canvas id = "main_chart">
-          </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- RESULTS -->
-  <section id="results" class="section">
-    <div class="wrap">
-      <div class="features-head">
-        <h2 class="features-title">Results</h2>
-        <p class="features-lead">Extracted spectograms, data and model predictions are below</p>
-      </div>
-
-      <!-- Top meta + podstawowe info -->
-      <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        <article class="card">
-          <h3 class="card-title">File metadata &#x2611;	</h3>
-          <div class="card-desc space-y-1">
-            <p><b>File name:</b> {{original_name}}</p>
-            <p><b>Duration:</b> {{duration}}s</p>
-            <p><b>Frequency:</b> {{sr}}Hz</p>
-            <p><b>Format:</b> {{mime}}</p>
-          </div>
-        </article>
-
-        <article class="card">
-          <h3 class="card-title">Key / Mode &#x2611;	</h3>
-          <div class="card-desc space-y-1">
-            <p><b>Key:</b> {{key}}</p>
-            <p><b>Mode:</b> {{scale}}</p>
-          </div>
-        </article>
-
-        <article class="card">
-          <h3 class="card-title">Tempo and metrum</h3>
-          <div class="card-desc space-y-1">
-            <p><b>Tempo (BPM):</b> {{tempo}}</p>
-            <p><b>Metrum:</b></p>
-            <p><b>Volume mean:</b></p>
-          </div>
-        </article>
-      </div>
-
-      <!-- Spotify-like features + wyniki modeli -->
-      <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mt-6">
-        <article class="card">
-          <h3 class="card-title">Perception features</h3>
-          <div class="card-desc grid grid-cols-2 gap-3 text-sm">
-            <p><b>Valence:</b></p>
-            <p><b>Energy:</b></p>
-            <p><b>Danceability:</b></p>
-            <p><b>Acousticness:</b></p>
-            <p><b>Instrumentalness:</b></p>
-            <p><b>Liveness:</b></p>
-            <p><b>Speechiness:</b></p>
-          </div>
-        </article>
-
-
-        <!-- TUTAJ TRZEBA POPRAWIC WYSWIETLANIE -->
-        <article class="card">
-          <h3 class="card-title">CNN model genre predictions:</h3>
-          <div class="card-desc space-y-1">
-        {% for genre, prob in genre_predictions %}
-        <tr>
-          <td class="px-2 py-1">{{ genre }}</td>
-          <td class="px-2 py-1">{{ "%.2f"|format(prob * 100) }}%</td>
-        </tr>
-        {% endfor %}
-          </div>
-        </article>
-
-        <article class="card">
-          <h3 class="card-title">Chroma </h3>
-          <div class="card-desc">
-            <p class="mb-2 text-sm opacity-80">Średnia chroma (12 klas wysokości):</p>
-            <ul class="grid grid-cols-2 gap-1 text-sm">
-              <li>C: 0.12</li>
-              <li>C#: </li>
-              <li>D: </li>
-              <li>D#: </li>
-              <li>E: </li>
-              <li>F: </li>
-              <li>F#: </li>
-              <li>G: </li>
-              <li>G#: </li>
-              <li>A: </li>
-              <li>A#: </li>
-              <li>B: </li>
-            </ul>
-          </div>
-        </article>
-      </div>
-
-      <!-- Wizualizacje -->
-      <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mt-6">
-        <article class="card">
-          <h3 class="card-title">Chromagram</h3>
-          <div class="card-desc">
-            <div class="h-64 w-full bg-neutral-100 flex items-center justify-center rounded-md">
-              <img src="{{ chroma_img_src }}" alt="Mel spectrogram" style="max-width:100%;border-radius:10px;">
-              <p>Plik: {{ saved_chroma_path }}</p>
-            </div>
-          </div>
-        </article>
-
-        <article class="card">
-          <h3 class="card-title">Mel-spektrogram</h3>
-          <div class="card-desc">
-            <div class="h-64 w-full bg-neutral-100 flex items-center justify-center rounded-md">
-              <img src="{{ mel_img_src }}" alt="Mel spectrogram" style="max-width:100%;border-radius:10px;">
-              <p>Plik: {{ mel_image_path }}</p>
-            </div>
-          </div>
-        </article>
-      </div>
-
-      <!-- Segmenty -->
-      <div class="card mt-6">
-        <h3 class="card-title">Segmenty &amp; wektory pitch</h3>
-        <div class="card-desc overflow-x-auto">
-          <table class="min-w-full text-sm">
-            <thead>
-              <tr class="text-left opacity-70">
-                <th>#</th><th>Start (s)</th><th>Długość (s)</th><th>Pitches</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr><td>1</td><td>0.00</td><td>0.50</td><td>[0.8, 0.1, 0.05, ...]</td></tr>
-              <tr><td>2</td><td>0.50</td><td>0.50</td><td>[0.7, 0.2, 0.1, ...]</td></tr>
-              <tr><td>3</td><td>1.00</td><td>0.50</td><td>[0.6, 0.3, 0.1, ...]</td></tr>
-            </tbody>
-          </table>
+  <!-- PODSTAWOWE INFORMACJE (3 KARTY) -->
+  <section class="grid grid-cols-1 md:grid-cols-3 gap-6">
+    <!-- File metadata -->
+    <div class="bg-gray-800 border border-gray-700 rounded-xl p-5">
+      <h3 class="text-lg font-semibold text-white mb-3">
+        File metadata ☑
+      </h3>
+      <dl class="text-sm text-gray-300 space-y-1">
+        <div class="flex justify-between">
+          <dt class="text-gray-400">File name:</dt>
+          <dd class="font-medium">{{ original_name }}</dd>
         </div>
-      </div>
+        <div class="flex justify-between">
+          <dt class="text-gray-400">Duration:</dt>
+          <dd class="font-medium">{{ duration }} s</dd>
+        </div>
+        <div class="flex justify-between">
+          <dt class="text-gray-400">Sample rate:</dt>
+          <dd class="font-medium">{{ sr }} Hz</dd>
+        </div>
+        <div class="flex justify-between">
+          <dt class="text-gray-400">Format:</dt>
+          <dd class="font-medium">{{ mime }}</dd>
+        </div>
+      </dl>
+    </div>
 
-      <!-- Logi / błędy -->
-      <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mt-6">
-        <article class="card">
-          <h3 class="card-title">Log</h3>
-          <pre class="card-desc text-xs whitespace-pre-wrap">[INFO] Start analizy
+    <!-- Tonacja / skala -->
+    <div class="bg-gray-800 border border-gray-700 rounded-xl p-5">
+      <h3 class="text-lg font-semibold text-white mb-3">
+        Key / Mode ☑
+      </h3>
+      <dl class="text-sm text-gray-300 space-y-1">
+        <div class="flex justify-between">
+          <dt class="text-gray-400">Key:</dt>
+          <dd class="font-medium">{{ key }}</dd>
+        </div>
+        <div class="flex justify-between">
+          <dt class="text-gray-400">Mode:</dt>
+          <dd class="font-medium">{{ scale }}</dd>
+        </div>
+      </dl>
+    </div>
+
+    <!-- Tempo / metrum -->
+    <div class="bg-gray-800 border border-gray-700 rounded-xl p-5">
+      <h3 class="text-lg font-semibold text-white mb-3">
+        Tempo &amp; dynamics
+      </h3>
+      <dl class="text-sm text-gray-300 space-y-1">
+        <div class="flex justify-between">
+          <dt class="text-gray-400">Tempo (BPM):</dt>
+          <dd class="font-medium">{{ tempo }}</dd>
+        </div>
+        <div class="flex justify-between">
+          <dt class="text-gray-400">Meter:</dt>
+          <dd class="font-medium italic text-gray-500">—</dd>
+        </div>
+        <div class="flex justify-between">
+          <dt class="text-gray-400">Volume mean:</dt>
+          <dd class="font-medium italic text-gray-500">—</dd>
+        </div>
+      </dl>
+    </div>
+  </section>
+
+  <!-- GATUNEK + PERCEPTION + CHROMA -->
+  <section class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+
+    <!-- Perception features -->
+    <div class="bg-gray-800 border border-gray-700 rounded-xl p-5">
+      <h3 class="text-lg font-semibold text-white mb-3">
+        Perception features
+      </h3>
+      <table class="w-full text-sm text-gray-300">
+        <tbody class="divide-y divide-gray-700">
+          <tr>
+            <td class="py-1 pr-3 text-gray-400">Valence</td>
+            <td class="py-1 font-medium italic text-gray-500">—</td>
+          </tr>
+          <tr>
+            <td class="py-1 pr-3 text-gray-400">Energy</td>
+            <td class="py-1 font-medium italic text-gray-500">—</td>
+          </tr>
+          <tr>
+            <td class="py-1 pr-3 text-gray-400">Danceability</td>
+            <td class="py-1 font-medium italic text-gray-500">—</td>
+          </tr>
+          <tr>
+            <td class="py-1 pr-3 text-gray-400">Acousticness</td>
+            <td class="py-1 font-medium italic text-gray-500">—</td>
+          </tr>
+          <tr>
+            <td class="py-1 pr-3 text-gray-400">Instrumentalness</td>
+            <td class="py-1 font-medium italic text-gray-500">—</td>
+          </tr>
+          <tr>
+            <td class="py-1 pr-3 text-gray-400">Liveness</td>
+            <td class="py-1 font-medium italic text-gray-500">—</td>
+          </tr>
+          <tr>
+            <td class="py-1 pr-3 text-gray-400">Speechiness</td>
+            <td class="py-1 font-medium italic text-gray-500">—</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- CNN genre predictions -->
+    <div class="bg-gray-800 border border-gray-700 rounded-xl p-5">
+      <h3 class="text-lg font-semibold text-white mb-3">
+        CNN – genre predictions
+      </h3>
+      <table class="w-full text-sm text-gray-300">
+        <thead>
+          <tr class="border-b border-gray-700 text-gray-400">
+            <th class="py-1 text-left">Genre</th>
+            <th class="py-1 text-right">Probability</th>
+          </tr>
+        </thead>
+        <tbody class="divide-y divide-gray-800">
+          {% for genre, prob in genre_predictions %}
+          <tr>
+            <td class="py-1 pr-3">{{ genre }}</td>
+            <td class="py-1 text-right font-mono">{{ "%.2f"|format(prob * 100) }}%</td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+
+    <!-- CHROMA FEATURE BOX -->
+    <div class="bg-gray-800 border border-gray-700 rounded-xl p-5">
+      <h3 class="text-lg font-semibold text-white mb-3">
+        Chroma (average)
+      </h3>
+      <p class="text-xs text-gray-400 mb-3">
+        Średnie wzmocnienie 12 klas wysokości dźwięku (C, C#, …, B).
+        Na tym etapie wpisane są wartości przykładowe / placeholdery.
+      </p>
+      <table class="w-full text-sm text-gray-300">
+        <tbody class="divide-y divide-gray-800">
+          <tr><td class="py-1 pr-3 text-gray-400">C</td><td class="py-1">0.12</td></tr>
+          <tr><td class="py-1 pr-3 text-gray-400">C#</td><td class="py-1">—</td></tr>
+          <tr><td class="py-1 pr-3 text-gray-400">D</td><td class="py-1">—</td></tr>
+          <tr><td class="py-1 pr-3 text-gray-400">D#</td><td class="py-1">—</td></tr>
+          <tr><td class="py-1 pr-3 text-gray-400">E</td><td class="py-1">—</td></tr>
+          <tr><td class="py-1 pr-3 text-gray-400">F</td><td class="py-1">—</td></tr>
+          <tr><td class="py-1 pr-3 text-gray-400">F#</td><td class="py-1">—</td></tr>
+          <tr><td class="py-1 pr-3 text-gray-400">G</td><td class="py-1">—</td></tr>
+          <tr><td class="py-1 pr-3 text-gray-400">G#</td><td class="py-1">—</td></tr>
+          <tr><td class="py-1 pr-3 text-gray-400">A</td><td class="py-1">—</td></tr>
+          <tr><td class="py-1 pr-3 text-gray-400">A#</td><td class="py-1">—</td></tr>
+          <tr><td class="py-1 pr-3 text-gray-400">B</td><td class="py-1">—</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+  </section>
+
+  <!-- SPEKTROGRAMY -->
+  <section class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+    <!-- Chromagram -->
+    <div class="bg-gray-800 border border-gray-700 rounded-xl p-5">
+      <h3 class="text-lg font-semibold text-white mb-3">
+        Chromagram
+      </h3>
+      <div class="rounded-lg overflow-hidden border border-gray-700 bg-gray-900">
+        <img src="{{ chroma_img_src }}"
+             alt="Chromagram"
+             class="w-full h-64 object-contain bg-black">
+      </div>
+      <p class="mt-2 text-xs text-gray-500 break-all">
+        Plik źródłowy: {{ saved_chroma_path }}
+      </p>
+    </div>
+
+    <!-- Mel-spektrogram -->
+    <div class="bg-gray-800 border border-gray-700 rounded-xl p-5">
+      <h3 class="text-lg font-semibold text-white mb-3">
+        Mel-spektrogram
+      </h3>
+      <div class="rounded-lg overflow-hidden border border-gray-700 bg-gray-900">
+        <img src="{{ mel_img_src }}"
+             alt="Mel spectrogram"
+             class="w-full h-64 object-contain bg-black">
+      </div>
+      <p class="mt-2 text-xs text-gray-500 break-all">
+        Plik źródłowy: {{ mel_image_path }}
+      </p>
+    </div>
+  </section>
+
+  <!-- SEGMENTY / PITCH VECTORS -->
+  <section>
+    <div class="bg-gray-800 border border-gray-700 rounded-xl p-5">
+      <h3 class="text-lg font-semibold text-white mb-3">
+        Segmenty &amp; pitch vectors
+      </h3>
+      <div class="overflow-x-auto">
+        <table class="min-w-full text-sm text-gray-300">
+          <thead class="border-b border-gray-700 text-gray-400">
+            <tr>
+              <th class="py-2 pr-4 text-left">#</th>
+              <th class="py-2 pr-4 text-left">Start (s)</th>
+              <th class="py-2 pr-4 text-left">Length (s)</th>
+              <th class="py-2 pr-4 text-left">Pitches</th>
+            </tr>
+          </thead>
+          <tbody class="divide-y divide-gray-800">
+            <tr>
+              <td class="py-1 pr-4">1</td>
+              <td class="py-1 pr-4">0.00</td>
+              <td class="py-1 pr-4">0.50</td>
+              <td class="py-1 pr-4">[0.8, 0.1, 0.05, …]</td>
+            </tr>
+            <tr>
+              <td class="py-1 pr-4">2</td>
+              <td class="py-1 pr-4">0.50</td>
+              <td class="py-1 pr-4">0.50</td>
+              <td class="py-1 pr-4">[0.7, 0.2, 0.1, …]</td>
+            </tr>
+            <tr>
+              <td class="py-1 pr-4">3</td>
+              <td class="py-1 pr-4">1.00</td>
+              <td class="py-1 pr-4">0.50</td>
+              <td class="py-1 pr-4">[0.6, 0.3, 0.1, …]</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  <!-- LOG / ERRORS -->
+  <section class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+    <div class="bg-gray-800 border border-gray-700 rounded-xl p-5">
+      <h3 class="text-lg font-semibold text-white mb-3">
+        Log
+      </h3>
+      <pre class="text-xs text-gray-300 bg-gray-900 border border-gray-700 rounded-lg p-3 overflow-x-auto whitespace-pre-wrap">
+[INFO] Start analizy
 [INFO] Ekstrakcja cech chroma
 [OK] Key: C major (0.87)
-[INFO] CNN Genre = Blues
-</pre>
-        </article>
+[INFO] CNN Genre = ...
+      </pre>
+    </div>
 
-        <article class="card">
-          <h3 class="card-title">Błędy</h3>
-          <div class="card-desc opacity-60">Brak błędów</div>
-        </article>
-      </div>
+    <div class="bg-gray-800 border border-gray-700 rounded-xl p-5">
+      <h3 class="text-lg font-semibold text-white mb-3">
+        Błędy
+      </h3>
+      <p class="text-sm text-gray-400">
+        Brak błędów wykrytych podczas przetwarzania pliku.
+      </p>
     </div>
   </section>
 
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-
+</main>
 {% endblock %}
 
-
+{% block scripts %}
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script>
+    // Przykładowy wykres – żeby canvas nie był pusty (możesz go potem nadpisać realnymi danymi)
+    const ctx = document.getElementById('main_chart');
+    if (ctx) {
+      new Chart(ctx, {
+        type: 'line',
+        data: {
+          labels: Array.from({length: 50}, (_, i) => i),
+          datasets: [{
+            label: 'Example energy',
+            data: Array.from({length: 50}, () => Math.random()),
+            borderWidth: 1,
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          scales: {
+            x: { display: false },
+            y: { display: true }
+          }
+        }
+      });
+    }
+  </script>
+{% endblock %}
 

@@ -16,9 +16,9 @@ bp = Blueprint("main", __name__)
 def hello():
     return render_template("home.html")
 
-@bp.route("/app")
+@bp.route("/about")
 def app():
-    return render_template("app.html")
+    return render_template("about.html")
 
 @bp.route("/contact")
 def contact():
@@ -28,11 +28,11 @@ def contact():
 
 @bp.route("/analyze", methods=["POST"])
 def analyze():
-    if "file" not in request.files:
+    uploaded = request.files.get("file")
+    if uploaded is None:
         return "No file part", 400
 
-    file = request.files["file"]
-    if file.filename == "":
+    if uploaded.filename == "":
         return "No file selected", 400
 
     save_input_file_path = "/home/ciona/projects/RCOLM/data/input/wavs/"
@@ -60,13 +60,13 @@ def analyze():
     key, scale = Extractors.key_extractor(filepath)
 
     # machine learning model
-    save_dir = "/home/ciona/projects/RCOLM/data_models/saved/gtzan_v1/"
+    gtzan_dir = "/home/ciona/projects/RCOLM/data_models/saved/gtzan_v1/"
 
     # TODO: zmienić na dynamiczny link do bazy
     mel_image_path = saved_mel_path
 
     # loading model with metadata 
-    model, meta = MLP_gtzan.load_model(save_dir)
+    model, meta = MLP_gtzan.load_model(gtzan_dir)
     mime = original_name.split(".")[1]
     
     # activating prediction function

@@ -163,16 +163,32 @@ class MLP_gtzan:
 
     #this method takes dir where model is saved, and its returing it with metadata(classes)
     @staticmethod
-    def load_model(save_dir):
-        """Ładuje model + metadane"""
+    def load_model(save_dir: str):
+        """
+        Ładuje model z pliku model.keras oraz meta.json z katalogu save_dir.
+        """
         save_dir = Path(save_dir)
-        model = tf.keras.models.load_model(save_dir, compile=False)
+
+        if not save_dir.exists():
+            raise FileNotFoundError(f"Ścieżka nie istnieje: {save_dir}")
+
+        # 1) Konkretny plik modelu
+        model_path = save_dir / "model.keras"
+        if not model_path.exists():
+            raise FileNotFoundError(f"Nie znaleziono pliku modelu: {model_path}")
+
+        # 2) Ładowanie modelu
+        model = tf.keras.models.load_model(str(model_path), compile=False)
+
+        # 3) Ładowanie meta.json
         meta_path = save_dir / "meta.json"
-        with open(meta_path, "r", encoding="utf-8") as f:
-            meta = json.load(f)
+        if meta_path.exists():
+            with open(meta_path, "r", encoding="utf-8") as f:
+                meta = json.load(f)
+        else:
+            meta = {}
+
         return model, meta
-
-
     # this method takes already saved model, metadata(classes) and melspec path,
     # then it's preprocessing png and predicting the output 
     @staticmethod
