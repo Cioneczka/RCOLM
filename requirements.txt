@@ -27,7 +27,7 @@ crepe==0.0.16
 ffmpeg-python==0.2.0
 
 # --- Wykresy / wizualizacja ---
-matplotlib==3.8.2
+matplotlib==3.9.0
 
 # --- Narzędzia ---
 tqdm==4.67.1
