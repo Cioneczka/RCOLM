@@ -19,10 +19,11 @@ for g in gpus:
         pass
 tf.config.optimizer.set_jit(False)  # wyłącz XLA, jeśli robił problemy
 
-import sys
-sys.path.append("/home/ciona/projects/RCOLM/data_models/MyModels/")
-from mymodels import MyModels
+# import sys
+# sys.path.append("/home/ciona/projects/RCOLM/data_models/MyModels/")
+# from mymodels import MyModels
 
+from data_models.MyModels.mymodels import MyModels
 import os
 os.environ["CUDA_VISIBLE_DEVICES"] = "-1"   # całkowicie wyłącz GPU
 # %%

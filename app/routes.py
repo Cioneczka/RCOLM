@@ -60,7 +60,7 @@ def analyze():
 
     # basic information about file 
     tempo, sr = Extractors.tempo_estimator(filepath)
-    key, scale = Extractors.key_extractor(filepath)
+    #key, scale = Extractors.key_extractor(filepath)
 
     # machine learning model
     gtzan_dir = "/home/ciona/projects/RCOLM/data_models/saved/gtzan_v1/"
@@ -74,10 +74,10 @@ def analyze():
     
     # activating prediction function
     genre_predictions = MLP_gtzan.predict_from_path(model, meta, mel_image_path)
-    track_id = Gtzan_db.insert_to_tracks(original_name, filepath, mime, sr, duration, sha256, scale)
+    #track_id = Gtzan_db.insert_to_tracks(original_name, filepath, mime, sr, duration, sha256, scale)
 
-    insert_to_plots(track_id, saved_mel_path, "mel")
-    insert_to_plots(track_id, saved_chroma_path, "chroma")
+    #insert_to_plots(track_id, saved_mel_path, "mel")
+    #insert_to_plots(track_id, saved_chroma_path, "chroma")
     
     #  przekazujemy mel_img_src do szablonu HTML
     return render_template(
@@ -85,8 +85,8 @@ def analyze():
         original_name=original_name,
         tempo=tempo,
         sr=sr,
-        key=key,
-        scale=scale,
+        #key=key,
+        #scale=scale,
         genre_predictions=genre_predictions,
         duration=duration,
         mime=mime,
