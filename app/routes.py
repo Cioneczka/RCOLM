@@ -24,6 +24,9 @@ def app():
 def contact():
     return render_template("contact.html")
 
+@bp.route("/licenses")
+def licenses():
+    return render_template("licenses.html")
 
 
 @bp.route("/analyze", methods=["POST"])

@@ -1,0 +1,40 @@
+
+{% extends "base.html" %}
+{% block title %}Licensing | RCOLM{% endblock %}
+
+{% block content %}
+<main class="max-w-screen-xl mx-auto px-4 pt-24 pb-16 space-y-10">
+
+  <h1 class="text-3xl font-bold text-white mb-3">Licensing</h1>
+  <p class="text-gray-400 mb-6 max-w-3xl">
+    Poniżej znajdują się informacje o licencjach wykorzystanych bibliotek, modeli i danych.
+  </p>
+
+  <!-- LICENSE CARDS -->
+  <section class="space-y-6">
+
+    <div class="bg-gray-800 border border-gray-700 rounded-xl p-6">
+      <h2 class="text-xl font-semibold text-white mb-2">Biblioteki open-source</h2>
+      <ul class="text-gray-300 list-disc ml-5 space-y-1">
+        <li>TensorFlow — Apache 2.0</li>
+        <li>Librosa — ISC License</li>
+        <li>NumPy — BSD License</li>
+        <li>Matplotlib — PSF License</li>
+        <li>Flowbite — MIT License</li>
+        <li>TailwindCSS — MIT License</li>
+      </ul>
+    </div>
+
+    <div class="bg-gray-800 border border-gray-700 rounded-xl p-6">
+      <h2 class="text-xl font-semibold text-white mb-2">Modele i dane</h2>
+      <ul class="text-gray-300 list-disc ml-5 space-y-1">
+        <li>GTZAN Dataset — użycie zgodne z zasadami fair use</li>
+        <li>MUSDB18HQ - wkleic</li>
+      </ul>
+    </div>
+
+  </section>
+
+</main>
+{% endblock %}
+

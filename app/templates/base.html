@@ -28,7 +28,11 @@
 
       <!-- LOGO -->
       <a href="/" class="flex items-center space-x-3">
-        <img src="{{ url_for('static', filename='img/RCOLM_logo.png') }}" class="h-9" alt="RCOLM logo">
+
+      <img src="{{ url_for('static', filename='img/RCOLM_logo.png') }}"
+          class="h-10 w-10 rounded-full object-cover"
+          alt="RCOLM logo">
+
         <span class="text-xl font-semibold">RCOLM</span>
       </a>
 
@@ -72,7 +76,7 @@
     <span>© 2025 RCOLM. All rights reserved.</span>
     <ul class="flex space-x-6 mt-3 md:mt-0">
       <li><a href="/about" class="hover:underline">About</a></li>
-      <li><a href="#" class="hover:underline">Licensing</a></li>
+      <li><a href="/licenses" class="hover:underline">Licensing</a></li>
     </ul>
   </div>
 </footer>
