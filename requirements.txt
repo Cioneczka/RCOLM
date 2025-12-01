@@ -1,27 +1,36 @@
-# --- Web / API ---
-Flask
-gunicorn
+# --- Web / serwer ---
+Flask==3.1.2
+gunicorn==23.0.0
 
-# --- TensorFlow + modele .h5 ---
-tensorflow
-h5py
+# --- Podstawowe naukowe / ML ---
+numpy==2.2.6
+scipy==1.15.3
+pandas==2.3.3
+scikit-learn==1.7.2
+joblib==1.5.2
+h5py==3.15.1
 
-# --- Numeryka / ML ---
-numpy
-scipy
-pandas
-scikit-learn
-joblib
-hmmlearn
+# --- TensorFlow / Keras ---
+tensorflow==2.20.0
+keras==3.12.0
+ml_dtypes==0.5.3
 
-# --- Audio processing ---
-librosa
-soundfile
-audioread
-resampy
-soxr
+# --- Audio / DSP ---
+librosa==0.11.0
+soundfile==0.13.1
+audioread==3.1.0
+resampy==0.4.3
+soxr==1.0.0
+musdb==0.4.3
+stempeg==0.2.6
+crepe==0.0.16
+ffmpeg-python==0.2.0
 
-# --- Narzędzia ogólne (często używane) ---
-requests
-tqdm
+# --- Wykresy / wizualizacja ---
+matplotlib==3.8.2
+
+# --- Narzędzia ---
+tqdm==4.67.1
+requests==2.32.5
+rich==14.2.0
 
