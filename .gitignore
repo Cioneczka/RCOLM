@@ -30,4 +30,4 @@ build/
 __*.py
 *.npz
 *.ipynb
-!static/**/*.png
+!app/static/**/*.png
