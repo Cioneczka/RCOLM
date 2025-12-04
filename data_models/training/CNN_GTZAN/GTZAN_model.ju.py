@@ -15,7 +15,7 @@ from tensorflow.keras import Model
 from sklearn.decomposition import PCA
 from sklearn.manifold import TSNE
 
-
+from app.paths import GTZAN_MODEL_DIR 
 # GPU: bardziej stabilnie
 gpus = tf.config.list_physical_devices('GPU')
 for g in gpus:
@@ -26,7 +26,7 @@ for g in gpus:
 tf.config.optimizer.set_jit(False)  # wyłącz XLA, jeśli robił problemy
 
 import sys
-sys.path.append("/home/ciona/projects/RCOLM/data_models/MyModels/")
+sys.path.append(GTZAN_MODEL_DIR)
 from mymodels import MyModels
 tf.config.set_visible_devices([], 'GPU')
 os.environ["CUDA_VISIBLE_DEVICES"] = "-1"   # całkowicie wyłącz GPU
@@ -154,7 +154,7 @@ class MLP_gtzan:
             "image_height": image_size[1],
             "expects_softmax": True
         }
-        with open(save_dir / "meta.json", "w", encoding="utf-8") as f:
+        with open(save_dir , "w", encoding="utf-8") as f:
             json.dump(meta, f, ensure_ascii=False, indent=2)
 
         print(f"✅ Zapisano model do {save_dir.resolve()}")
@@ -163,24 +163,34 @@ class MLP_gtzan:
 
     #this method takes dir where model is saved, and its returing it with metadata(classes)
     @staticmethod
-    def load_model(save_dir: str):
+    def load_model(save_dir):
         """
-        Ładuje model z pliku model.keras oraz meta.json z katalogu save_dir.
+        Ładuje model (SavedModel albo .h5/.keras) oraz meta.json z katalogu save_dir.
         """
         save_dir = Path(save_dir)
 
         if not save_dir.exists():
             raise FileNotFoundError(f"Ścieżka nie istnieje: {save_dir}")
 
-        # 1) Konkretny plik modelu
-        model_path = save_dir / "model.keras"
-        if not model_path.exists():
-            raise FileNotFoundError(f"Nie znaleziono pliku modelu: {model_path}")
+        # 1) Sprawdź, czy to SavedModel (saved_model.pb w katalogu)
+        savedmodel_pb = save_dir / "saved_model.pb"
+        if savedmodel_pb.exists():
+            # klasyczny SavedModel – ładujemy cały katalog
+            model_path = save_dir
+        else:
+            # 2) Szukamy pliku .h5 / .keras wewnątrz katalogu
+            candidates = list(save_dir.glob("*.h5")) + list(save_dir.glob("*.keras"))
+            if not candidates:
+                raise FileNotFoundError(
+                    f"Nie znaleziono pliku modelu (.h5/.keras) ani SavedModel w {save_dir}"
+                )
+            # jeśli jest kilka plików – bierzemy pierwszy, możesz tu zawęzić nazwę
+            model_path = candidates[0]
 
-        # 2) Ładowanie modelu
+        # 3) Ładowanie modelu
         model = tf.keras.models.load_model(str(model_path), compile=False)
 
-        # 3) Ładowanie meta.json
+        # 4) Ładowanie meta.json z katalogu
         meta_path = save_dir / "meta.json"
         if meta_path.exists():
             with open(meta_path, "r", encoding="utf-8") as f:

@@ -15,4 +15,4 @@ GTZAN_DIR = BASE_PATH / "data_models" / "saved" / "gtzan_v1"
 MUSDB_DIR = BASE_PATH / "data_models" / "saved" / "musdb18"
 
 GTZAN_KERAS_FILE_DIR = GTZAN_DIR / "model.keras"
-
+GTZAN_MODEL_DIR = BASE_PATH / "data_models" / "Mymodels" 
