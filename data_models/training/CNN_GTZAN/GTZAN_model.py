@@ -143,23 +143,56 @@ class MLP_gtzan:
 
 
 
-    #this method takes dir where model is saved, and its returing it with metadata(classes)
-
+ #this method takes dir where model is saved, and its returing it with metadata(classes)
     @staticmethod
-    def load_model(save_dir):
-        save_dir = Path(save_dir)
-        model_path = save_dir     # <- to jest ważne
-        model = tf.keras.models.load_model(model_path, compile=False)
+    def load_model(path):
+        """
+        Ładuje model (SavedModel albo .h5/.keras) oraz meta.json.
 
-        meta_path = save_dir / "meta.json"
-        with open(meta_path, "r", encoding="utf-8") as f:
-            meta = json.load(f)
+        path może być:
+        - katalogiem z modelem (np. data_models/saved/gtzan_v1)
+        - albo ścieżką do samego pliku modelu (np. .../gtzan_v1/model.keras)
+        """
+        path = Path(path)
+
+        if not path.exists():
+            raise FileNotFoundError(f"Ścieżka nie istnieje: {path}")
+
+        # Rozróżniam: podany katalog czy plik?
+        if path.is_file():
+            # path = .../model.keras lub .../model.h5
+            model_path = path
+            base_dir = path.parent
+        else:
+            # path = katalog z modelem
+            base_dir = path
+
+            # 1) SavedModel (saved_model.pb w katalogu)
+            savedmodel_pb = base_dir / "saved_model.pb"
+            if savedmodel_pb.exists():
+                model_path = base_dir
+            else:
+                # 2) Szukam pliku .h5 / .keras w katalogu
+                candidates = list(base_dir.glob("*.h5")) + list(base_dir.glob("*.keras"))
+                if not candidates:
+                    raise FileNotFoundError(
+                        f"Nie znaleziono pliku modelu (.h5/.keras) ani SavedModel w {base_dir}"
+                    )
+                model_path = candidates[0]
+
+        # 3) Ładowanie modelu
+        model = tf.keras.models.load_model(str(model_path), compile=False)
+
+        # 4) Ładowanie metadata.json z katalogu, w którym leży model
+        meta_path = base_dir / "metadata.json"
+        if meta_path.exists():
+            with open(meta_path, "r", encoding="utf-8") as f:
+                meta = json.load(f)
+        else:
+            meta = {}
 
         return model, meta
-
-
-
-    # this method takes already saved model, metadata(classes) and melspec path,
+    # this method takes already saved model,
     # then it's preprocessing png and predicting the output 
     @staticmethod
     def predict_from_path(model, meta, image_path, top_k=3):

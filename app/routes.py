@@ -78,7 +78,7 @@ def analyze():
 
     # machine learning model – ścieżka z paths.py
     gtzan_dir = str(GTZAN_KERAS_FILE_DIR)
-
+    
     # TODO: zmienić na dynamiczny link do bazy
     mel_image_path = saved_mel_path
 

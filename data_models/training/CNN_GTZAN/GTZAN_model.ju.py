@@ -176,7 +176,7 @@ class MLP_gtzan:
         if not path.exists():
             raise FileNotFoundError(f"Ścieżka nie istnieje: {path}")
 
-        # Rozróżniamy: podany katalog czy plik?
+        # Rozróżniam: podany katalog czy plik?
         if path.is_file():
             # path = .../model.keras lub .../model.h5
             model_path = path
@@ -190,7 +190,7 @@ class MLP_gtzan:
             if savedmodel_pb.exists():
                 model_path = base_dir
             else:
-                # 2) Szukamy pliku .h5 / .keras w katalogu
+                # 2) Szukam pliku .h5 / .keras w katalogu
                 candidates = list(base_dir.glob("*.h5")) + list(base_dir.glob("*.keras"))
                 if not candidates:
                     raise FileNotFoundError(
@@ -201,7 +201,7 @@ class MLP_gtzan:
         # 3) Ładowanie modelu
         model = tf.keras.models.load_model(str(model_path), compile=False)
 
-        # 4) Ładowanie meta.json z katalogu, w którym leży model
+        # 4) Ładowanie metadata.json z katalogu, w którym leży model
         meta_path = base_dir / "metadata.json"
         if meta_path.exists():
             with open(meta_path, "r", encoding="utf-8") as f:
