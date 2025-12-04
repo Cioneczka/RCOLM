@@ -83,11 +83,11 @@ def analyze():
     mel_image_path = saved_mel_path
 
     # loading model with metadata
-    model, meta = MLP_gtzan.load_model(gtzan_dir)
+    #model, meta = MLP_gtzan.load_model(gtzan_dir)
     mime = original_name.split(".")[1]
 
     # activating prediction function
-    genre_predictions = MLP_gtzan.predict_from_path(model, meta, mel_image_path)
+    #genre_predictions = MLP_gtzan.predict_from_path(model, meta, mel_image_path)
     # track_id = Gtzan_db.insert_to_tracks(original_name, filepath, mime, sr, duration, sha256, scale)
 
     # insert_to_plots(track_id, saved_mel_path, "mel")
@@ -101,7 +101,7 @@ def analyze():
         sr=sr,
         # key=key,
         # scale=scale,
-        genre_predictions=genre_predictions,
+   #     genre_predictions=genre_predictions,
         duration=duration,
         mime=mime,
         mel_img_src=mel_img_src,  # obraz w base64

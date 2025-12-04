@@ -144,15 +144,19 @@ class MLP_gtzan:
 
 
     #this method takes dir where model is saved, and its returing it with metadata(classes)
+
     @staticmethod
     def load_model(save_dir):
-        """Ładuje model + metadane"""
         save_dir = Path(save_dir)
-        model = tf.keras.models.load_model(save_dir, compile=False)
+        model_path = save_dir     # <- to jest ważne
+        model = tf.keras.models.load_model(model_path, compile=False)
+
         meta_path = save_dir / "meta.json"
         with open(meta_path, "r", encoding="utf-8") as f:
             meta = json.load(f)
+
         return model, meta
+
 
 
     # this method takes already saved model, metadata(classes) and melspec path,
@@ -177,7 +181,5 @@ class MLP_gtzan:
         return results
 
 
-
-# %% USTAW ŚCIEŻKĘ NA GÓRZE PRZED UŻYCIEM
 
 
