@@ -83,7 +83,7 @@ def analyze():
     mel_image_path = saved_mel_path
 
     # loading model with metadata
-    #model, meta = MLP_gtzan.load_model(gtzan_dir)
+    model, meta = MLP_gtzan.load_model(gtzan_dir)
     mime = original_name.split(".")[1]
 
     # activating prediction function
