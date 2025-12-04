@@ -202,7 +202,7 @@ class MLP_gtzan:
         model = tf.keras.models.load_model(str(model_path), compile=False)
 
         # 4) Ładowanie meta.json z katalogu, w którym leży model
-        meta_path = base_dir / "meta.json"
+        meta_path = base_dir / "metadata.json"
         if meta_path.exists():
             with open(meta_path, "r", encoding="utf-8") as f:
                 meta = json.load(f)
