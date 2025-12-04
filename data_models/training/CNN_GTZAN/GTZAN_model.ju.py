@@ -163,35 +163,46 @@ class MLP_gtzan:
 
     #this method takes dir where model is saved, and its returing it with metadata(classes)
     @staticmethod
-    def load_model(save_dir):
+    def load_model(path):
         """
-        Ładuje model (SavedModel albo .h5/.keras) oraz meta.json z katalogu save_dir.
+        Ładuje model (SavedModel albo .h5/.keras) oraz meta.json.
+
+        path może być:
+        - katalogiem z modelem (np. data_models/saved/gtzan_v1)
+        - albo ścieżką do samego pliku modelu (np. .../gtzan_v1/model.keras)
         """
-        save_dir = Path(save_dir)
+        path = Path(path)
 
-        if not save_dir.exists():
-            raise FileNotFoundError(f"Ścieżka nie istnieje: {save_dir}")
+        if not path.exists():
+            raise FileNotFoundError(f"Ścieżka nie istnieje: {path}")
 
-        # 1) Sprawdź, czy to SavedModel (saved_model.pb w katalogu)
-        savedmodel_pb = save_dir / "saved_model.pb"
-        if savedmodel_pb.exists():
-            # klasyczny SavedModel – ładujemy cały katalog
-            model_path = save_dir
+        # Rozróżniamy: podany katalog czy plik?
+        if path.is_file():
+            # path = .../model.keras lub .../model.h5
+            model_path = path
+            base_dir = path.parent
         else:
-            # 2) Szukamy pliku .h5 / .keras wewnątrz katalogu
-            candidates = list(save_dir.glob("*.h5")) + list(save_dir.glob("*.keras"))
-            if not candidates:
-                raise FileNotFoundError(
-                    f"Nie znaleziono pliku modelu (.h5/.keras) ani SavedModel w {save_dir}"
-                )
-            # jeśli jest kilka plików – bierzemy pierwszy, możesz tu zawęzić nazwę
-            model_path = candidates[0]
+            # path = katalog z modelem
+            base_dir = path
+
+            # 1) SavedModel (saved_model.pb w katalogu)
+            savedmodel_pb = base_dir / "saved_model.pb"
+            if savedmodel_pb.exists():
+                model_path = base_dir
+            else:
+                # 2) Szukamy pliku .h5 / .keras w katalogu
+                candidates = list(base_dir.glob("*.h5")) + list(base_dir.glob("*.keras"))
+                if not candidates:
+                    raise FileNotFoundError(
+                        f"Nie znaleziono pliku modelu (.h5/.keras) ani SavedModel w {base_dir}"
+                    )
+                model_path = candidates[0]
 
         # 3) Ładowanie modelu
         model = tf.keras.models.load_model(str(model_path), compile=False)
 
-        # 4) Ładowanie meta.json z katalogu
-        meta_path = save_dir / "meta.json"
+        # 4) Ładowanie meta.json z katalogu, w którym leży model
+        meta_path = base_dir / "meta.json"
         if meta_path.exists():
             with open(meta_path, "r", encoding="utf-8") as f:
                 meta = json.load(f)
