@@ -19,7 +19,7 @@ build/
 *.mp3
 *.flac
 *.pt
-*.h5
+
 *.onnx
 *.pkl
 *.zip

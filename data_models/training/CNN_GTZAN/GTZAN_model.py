@@ -185,6 +185,7 @@ class MLP_gtzan:
 
         # 4) Ładowanie metadata.json z katalogu, w którym leży model
         meta_path = base_dir / "metadata.json"
+        print(meta_path)
         if meta_path.exists():
             with open(meta_path, "r", encoding="utf-8") as f:
                 meta = json.load(f)

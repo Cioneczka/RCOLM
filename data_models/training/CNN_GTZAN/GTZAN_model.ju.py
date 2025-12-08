@@ -176,7 +176,7 @@ class MLP_gtzan:
         if not path.exists():
             raise FileNotFoundError(f"Ścieżka nie istnieje: {path}")
 
-        # Rozróżniam: podany katalog czy plik?
+        # Rozróżniamy: podany katalog czy plik?
         if path.is_file():
             # path = .../model.keras lub .../model.h5
             model_path = path
