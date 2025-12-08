@@ -85,7 +85,7 @@ def analyze():
     # loading model with metadata
     model, meta = MLP_gtzan.load_model(gtzan_dir)
     mime = original_name.split(".")[1]
-
+    print("##### DDD META:", meta)
     # activating prediction function
     genre_predictions = MLP_gtzan.predict_from_path(model, meta, mel_image_path)
     # track_id = Gtzan_db.insert_to_tracks(original_name, filepath, mime, sr, duration, sha256, scale)
