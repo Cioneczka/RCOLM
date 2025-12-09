@@ -1,7 +1,6 @@
 import os
 import sys
-sys.path.append("/home/ciona/projects/RCOLM/data_models/MyModels")  
-from mymodels import MyModels
+from data_models.MyModels.mymodels import MyModels
 import tensorflow as tf
 import librosa 
 import numpy as np
