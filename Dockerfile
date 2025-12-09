@@ -32,9 +32,5 @@ COPY . .
 ENV PORT=8000
 
 # Uruchamianie przez gunicorn
-CMD ["gunicorn",
-     "-b", "0.0.0.0:8000",
-     "-w", "1",
-     "--timeout", "300",   # 5 minut
-     "app:app"]
+CMD ["gunicorn", "-b", "0.0.0.0:8000", "app:app", "--timeout", "600"]
 
