@@ -1,4 +1,5 @@
-import os 
+import os
+import sys
 sys.path.append("/home/ciona/projects/RCOLM/data_models/MyModels")  
 from mymodels import MyModels
 import tensorflow as tf
