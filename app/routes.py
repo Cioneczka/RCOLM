@@ -2,6 +2,7 @@
 from flask import Blueprint, render_template, request
 from data.static_data_collectors.data_extractors import Extractors
 from data_models.training.CNN_GTZAN.GTZAN_model import MLP_gtzan
+from data_models.training.musdb18.musdb_activation import source_activation
 from lib.file_save import Gtzan_db
 from lib.save_plot import (
     mel_to_disk_and_base64,
@@ -18,6 +19,7 @@ from .paths import (
     GTZAN_DIR,
     MUSDB_DIR,
     GTZAN_KERAS_FILE_DIR,
+    MUSDB_MODEL_FILE_PATH,
 )
 
 bp = Blueprint("main", __name__)
@@ -85,13 +87,10 @@ def analyze():
     # loading model with metadata
     model, meta = MLP_gtzan.load_model(gtzan_dir)
     mime = original_name.split(".")[1]
-    print("##### DDD META:", meta)
-    # activating prediction function
+    # activating genre prediction function
     genre_predictions = MLP_gtzan.predict_from_path(model, meta, mel_image_path)
-    # track_id = Gtzan_db.insert_to_tracks(original_name, filepath, mime, sr, duration, sha256, scale)
-
-    # insert_to_plots(track_id, saved_mel_path, "mel")
-    # insert_to_plots(track_id, saved_chroma_path, "chroma")
+    # activating split funcktion 
+    sources = source_activation(MUSDB_MODEL_FILE_PATH, filepath)  
 
     #  przekazujemy mel_img_src do szablonu HTML
     return render_template(
@@ -99,6 +98,7 @@ def analyze():
         original_name=original_name,
         tempo=tempo,
         sr=sr,
+        sources=sources,
         # key=key,
         # scale=scale,
         genre_predictions=genre_predictions,

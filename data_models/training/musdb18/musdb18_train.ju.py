@@ -11,6 +11,13 @@ sys.path.append("/home/ciona/projects/RCOLM/data_models/MyModels")
 from mymodels import MyModels
 
 import os
+
+from .paths import (
+    SAVE_INPUT_PATH_FILE,
+    SAVE_MEL_DIR,
+    SAVE_CHROMA_DIR,
+    MUSDB_DIR,
+)
 # %% [md]
 ##  Main funkction
 
@@ -289,16 +296,13 @@ def split_wav_into_stems(model_path, wav_path, out_dir,
         stems_audio.append(audio_s)
 
     print("Gotowe.")
+    plt.figure(figsize=(14, 5))
+    librosa.display.waveshow(y_foreground, sr=sr)
+    plt.title('Reconstructed Melody (Vocals)')
+    plt.xlabel('Time (seconds)')
+    plt.ylabel('Amplitude')
+    plt.tight_layout()
+    plt.show()
     return stems_audio
 
-model_path = "/home/ciona/projects/RCOLM/data_models/saved/musdb18/unet_model2025-11-25 15:46:24.041779.h5"
-
-wav_path   = "/home/ciona/projects/RCOLM/tests/marley.wav"
-out_dir    = "/home/ciona/projects/RCOLM/tests/"
-
-stems_audio = split_wav_into_stems(model_path, wav_path, out_dir)
-from IPython.display import Audio
-
-for stem in stems_audio:
-    display(Audio(stem, rate=44100))
 
