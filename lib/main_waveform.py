@@ -17,7 +17,7 @@ def signal_to_list(signal, sr, num_points=800):
         times = np.linspace(0, n / sr, num=n)
         times = np.round(times, 2).tolist()
         values = np.abs(sig).tolist()
-        return times, value
+        return times, values
 
     window = n // num_points
     sig = sig[: window * num_points].reshape(num_points, window)
