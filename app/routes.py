@@ -120,6 +120,6 @@ def analyze():
         mel_image_path=saved_mel_path,  # path obrazu
         chroma_img_src=chroma_img_src,
         saved_chroma_path=saved_chroma_path,
-        stem_chart_data=stems_chart_data,
+        stem_chart_data=stem_chart_data,
     )
 
