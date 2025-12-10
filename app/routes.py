@@ -91,9 +91,10 @@ def analyze():
     # activating genre prediction function
     genre_predictions = MLP_gtzan.predict_from_path(model, meta, mel_image_path)
     # activating split funcktion 
-    stems, sr = source_activation(MUSDB_MODEL_FILE_PATH, filepath)  
+    stems, sr = source_activation(MUSDB_MODEL_FILE_PATH, filepath)
+
     stem_names = ["Vocals", "Drums", "Bass", "Other"]
-    stems_chart_data = []
+    stem_chart_data = []
     print("Split function activated")
     for name, audio in zip(stem_names, stems):
         times, value = signal_to_list(stems, sr)
@@ -110,7 +111,6 @@ def analyze():
         original_name=original_name,
         tempo=tempo,
         sr=sr,
-        stems=stems,
         # key=key,
         # scale=scale,
         genre_predictions=genre_predictions,
@@ -120,6 +120,6 @@ def analyze():
         mel_image_path=saved_mel_path,  # path obrazu
         chroma_img_src=chroma_img_src,
         saved_chroma_path=saved_chroma_path,
-        stems_chart_data=stems_chart_data,
+        stem_chart_data=stems_chart_data,
     )
 
