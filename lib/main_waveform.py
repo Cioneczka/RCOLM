@@ -14,13 +14,14 @@ def signal_to_list(signal, sr, num_points=800):
         return [], []
 
     if n <= num_points:
-        times = np.linspace(0, n / sr, num=n).tolist()
+        times = np.linspace(0, n / sr, num=n)
+        times = np.round(times, 2).tolist()
         values = np.abs(sig).tolist()
-        return times, values
+        return times, value
 
     window = n // num_points
     sig = sig[: window * num_points].reshape(num_points, window)
     env = np.mean(np.abs(sig), axis=1)
-    times = np.linspace(0, n / sr, num=num_points).tolist()
+    times = np.linspace(0, n / sr, num=num_points)
+    times = np.round(times, 2).tolist()
     values = env.tolist()
-    return times, values
