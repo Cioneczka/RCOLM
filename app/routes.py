@@ -111,7 +111,6 @@ def analyze():
         tempo=tempo,
         sr=sr,
         stems=stems,
-        sr=sr,
         # key=key,
         # scale=scale,
         genre_predictions=genre_predictions,
