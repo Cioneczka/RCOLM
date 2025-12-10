@@ -90,20 +90,24 @@ def analyze():
     mime = original_name.split(".")[1]
     # activating genre prediction function
     genre_predictions = MLP_gtzan.predict_from_path(model, meta, mel_image_path)
-    # activating split funcktion 
+
+# activating split funcktion 
     stems, sr = source_activation(MUSDB_MODEL_FILE_PATH, filepath)
 
     stem_names = ["Vocals", "Drums", "Bass", "Other"]
-    stem_chart_data = []
+    stems_chart_data = []
     print("Split function activated")
+
     for name, audio in zip(stem_names, stems):
-        times, value = signal_to_list(stems, sr)
-        stem_chart_data.append(
-            {"name": name,
-             "times": times,
-             "values": value,
-             })
-    print("Dziala",name, times, value)
+        times, values = signal_to_list(audio, sr)  # <<< TU MA BYĆ 'audio'
+        stems_chart_data.append(
+            {
+                "name": name,
+                "times": times,
+                "values": values,
+            }
+        )
+
 
     #  przekazujemy mel_img_src do szablonu HTML
     return render_template(
@@ -120,6 +124,6 @@ def analyze():
         mel_image_path=saved_mel_path,  # path obrazu
         chroma_img_src=chroma_img_src,
         saved_chroma_path=saved_chroma_path,
-        stem_chart_data=stem_chart_data,
+        stems_chart_data=stems_chart_data,
     )
 

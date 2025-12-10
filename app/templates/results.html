@@ -18,7 +18,7 @@
 
   <!-- SEKCJA Z WYKRESEM (CANVAS) -->
 
-{% if stem_chart_data %}
+{% if stems_chart_data %}
 <section>
   <div class="bg-gray-800 border border-gray-700 rounded-2xl p-5 md:p-6">
     <div class="flex items-center justify-between mb-3">
@@ -309,7 +309,7 @@
   <script>
   document.addEventListener("DOMContentLoaded", function () {
     // Dane z Pythona
-    const stemChartData = {{ stem_chart_data | tojson }};
+    const stemChartData = {{ stems_chart_data | tojson }};
 
     const ctx = document.getElementById("main_chart").getContext("2d");
 
