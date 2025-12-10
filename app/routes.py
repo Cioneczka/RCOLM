@@ -21,6 +21,7 @@ from .paths import (
     GTZAN_KERAS_FILE_DIR,
     MUSDB_MODEL_FILE_PATH,
 )
+from lib.main_waveform import signal_to_list
 
 bp = Blueprint("main", __name__)
 
@@ -60,7 +61,7 @@ def analyze():
         file, str(SAVE_INPUT_PATH_FILE)
     )
 
-    #  Generating melspectogram, saving it on disk and in db + return to result template
+#  Generating melspectogram, saving it on disk and in db + return to result template
     mel_result = mel_to_disk_and_base64(filepath, str(SAVE_MEL_DIR))
     saved_mel_path = mel_result["save_path"]
     mel_img_src = mel_result["img_src"]
@@ -90,7 +91,18 @@ def analyze():
     # activating genre prediction function
     genre_predictions = MLP_gtzan.predict_from_path(model, meta, mel_image_path)
     # activating split funcktion 
-    sources = source_activation(MUSDB_MODEL_FILE_PATH, filepath)  
+    stems, sr = source_activation(MUSDB_MODEL_FILE_PATH, filepath)  
+    stem_names = ["Vocals", "Drums", "Bass", "Other"]
+    stems_chart_data = []
+
+    for name, audio in zip(stem_names, stems):
+        times, value = signal_to_list(stems, sr)
+        stems_chart_data.append(
+            {"name": name,
+             "times": times,
+             "values": value,
+             })
+
 
     #  przekazujemy mel_img_src do szablonu HTML
     return render_template(
@@ -98,7 +110,8 @@ def analyze():
         original_name=original_name,
         tempo=tempo,
         sr=sr,
-        sources=sources,
+        stems=stems,
+        sr=sr,
         # key=key,
         # scale=scale,
         genre_predictions=genre_predictions,
@@ -108,5 +121,6 @@ def analyze():
         mel_image_path=saved_mel_path,  # path obrazu
         chroma_img_src=chroma_img_src,
         saved_chroma_path=saved_chroma_path,
+        stems_chart_data=stems_chart_data,
     )
 

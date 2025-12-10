@@ -81,6 +81,6 @@ def source_activation(model_path, wav_path,
 
     print("Gotowe.")
 
-    return stems_audio
+    return stems_audio, sr
 
 

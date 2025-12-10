@@ -17,26 +17,31 @@
   </section>
 
   <!-- SEKCJA Z WYKRESEM (CANVAS) -->
-  <section>
-    <div class="bg-gray-800 border border-gray-700 rounded-2xl p-5 md:p-6">
-      <div class="flex items-center justify-between mb-3">
-        <h2 class="text-xl font-semibold text-white">
-          Visual representation of a song
-        </h2>
-        <span class="text-xs uppercase tracking-wide text-gray-400">
-          Live chart / spektrogram / waveform
-        </span>
-      </div>
-      <p class="text-gray-400 text-sm mb-4">
-        To miejsce możesz wykorzystać na interaktywny wykres (Chart.js) – np. energię w czasie,
-        przebieg chroma lub inny widok analizy.
-      </p>
 
-      <div class="aspect-video rounded-xl border border-gray-700 bg-gray-900 flex items-center justify-center">
-        <canvas id="main_chart" class="w-full h-full"></canvas>
-      </div>
+{% if stem_chart_data %}
+<section>
+  <div class="bg-gray-800 border border-gray-700 rounded-2xl p-5 md:p-6">
+    <div class="flex items-center justify-between mb-3">
+      <h2 class="text-xl font-semibold text-white">
+        Source activation – stemy w czasie
+      </h2>
+      <span class="text-xs uppercase tracking-wide text-gray-400">
+        Vocals / Drums / Bass / Other
+      </span>
     </div>
-  </section>
+
+    <p class="text-gray-400 text-sm mb-4">
+      Każda linia poniżej pokazuje przybliżoną energię (obwiednię) jednego stemu
+      w czasie. Oś X = czas [s], oś Y = względna amplituda.
+    </p>
+
+    <div class="aspect-video rounded-xl border border-gray-700 bg-gray-900 flex items-center justify-center">
+      <canvas id="main_chart" class="w-full h-full"></canvas>
+    </div>
+  </div>
+</section>
+{% endif %}
+
 
   <!-- PODSTAWOWE INFORMACJE (3 KARTY) -->
   <section class="grid grid-cols-1 md:grid-cols-3 gap-6">
