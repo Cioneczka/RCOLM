@@ -98,7 +98,7 @@ def analyze():
     print("Split function activated")
     for name, audio in zip(stem_names, stems):
         times, value = signal_to_list(stems, sr)
-        stems_chart_data.append(
+        stem_chart_data.append(
             {"name": name,
              "times": times,
              "values": value,
