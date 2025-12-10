@@ -307,29 +307,7 @@
 {% block scripts %}
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <script>
-    // Przykładowy wykres – żeby canvas nie był pusty (możesz go potem nadpisać realnymi danymi)
-    const ctx = document.getElementById('main_chart');
-    if (ctx) {
-      new Chart(ctx, {
-        type: 'line',
-        data: {
-          labels: Array.from({length: 50}, (_, i) => i),
-          datasets: [{
-            label: 'Example energy',
-            data: Array.from({length: 50}, () => Math.random()),
-            borderWidth: 1,
-          }]
-        },
-        options: {
-          responsive: true,
-          maintainAspectRatio: false,
-          scales: {
-            x: { display: false },
-            y: { display: true }
-          }
-        }
-      });
-    }
+
 
 
 

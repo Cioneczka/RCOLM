@@ -94,7 +94,7 @@ def analyze():
     stems, sr = source_activation(MUSDB_MODEL_FILE_PATH, filepath)  
     stem_names = ["Vocals", "Drums", "Bass", "Other"]
     stems_chart_data = []
-
+    print("Split function activated")
     for name, audio in zip(stem_names, stems):
         times, value = signal_to_list(stems, sr)
         stems_chart_data.append(
@@ -102,7 +102,7 @@ def analyze():
              "times": times,
              "values": value,
              })
-
+    print("Dziala",name, times, value)
 
     #  przekazujemy mel_img_src do szablonu HTML
     return render_template(
