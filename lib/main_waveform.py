@@ -25,3 +25,4 @@ def signal_to_list(signal, sr, num_points=800):
     times = np.linspace(0, n / sr, num=num_points)
     times = np.round(times, 2).tolist()
     values = env.tolist()
+    return times, values
