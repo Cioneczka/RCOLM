@@ -24,5 +24,6 @@ def signal_to_list(signal, sr, num_points=800):
     env = np.mean(np.abs(sig), axis=1)
     times = np.linspace(0, n / sr, num=num_points)
     times = np.round(times, 2).tolist()
+    values = env_db = 20 * np.log10(env + 1e-7)
     values = env.tolist()
     return times, values
