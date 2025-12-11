@@ -77,7 +77,7 @@ def analyze():
 
     # basic information about file
     tempo, sr = Extractors.tempo_estimator(filepath)
-    #key, scale = Extractors.key_extractor(filepath)
+    key, scale = Extractors.key_extractor(filepath)
 
     # machine learning model – ścieżka z paths.py
     gtzan_dir = str(GTZAN_KERAS_FILE_DIR)
@@ -115,8 +115,8 @@ def analyze():
         original_name=original_name,
         tempo=tempo,
         sr=sr,
-        # key=key,
-        # scale=scale,
+        key=key,
+        scale=scale,
         genre_predictions=genre_predictions,
         duration=duration,
         mime=mime,

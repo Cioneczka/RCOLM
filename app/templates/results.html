@@ -17,31 +17,29 @@
   </section>
 
   <!-- SEKCJA Z WYKRESEM (CANVAS) -->
+  {% if stems_chart_data %}
+  <section>
+    <div class="bg-gray-800 border border-gray-700 rounded-2xl p-5 md:p-6">
+      <div class="flex items-center justify-between mb-3">
+        <h2 class="text-xl font-semibold text-white">
+          Source activation – stemy w czasie
+        </h2>
+        <span class="text-xs uppercase tracking-wide text-gray-400">
+          Vocals / Drums / Bass / Other
+        </span>
+      </div>
 
-{% if stems_chart_data %}
-<section>
-  <div class="bg-gray-800 border border-gray-700 rounded-2xl p-5 md:p-6">
-    <div class="flex items-center justify-between mb-3">
-      <h2 class="text-xl font-semibold text-white">
-        Source activation – stemy w czasie
-      </h2>
-      <span class="text-xs uppercase tracking-wide text-gray-400">
-        Vocals / Drums / Bass / Other
-      </span>
+      <p class="text-gray-400 text-sm mb-4">
+        Każda linia poniżej pokazuje przybliżoną energię (obwiednię) jednego stemu
+        w czasie. Oś X = czas [s], oś Y = względna amplituda.
+      </p>
+
+      <div class="aspect-video rounded-xl border border-gray-700 bg-gray-900 flex items-center justify-center">
+        <canvas id="main_chart" class="w-full h-full"></canvas>
+      </div>
     </div>
-
-    <p class="text-gray-400 text-sm mb-4">
-      Każda linia poniżej pokazuje przybliżoną energię (obwiednię) jednego stemu
-      w czasie. Oś X = czas [s], oś Y = względna amplituda.
-    </p>
-
-    <div class="aspect-video rounded-xl border border-gray-700 bg-gray-900 flex items-center justify-center">
-      <canvas id="main_chart" class="w-full h-full"></canvas>
-    </div>
-  </div>
-</section>
-{% endif %}
-
+  </section>
+  {% endif %}
 
   <!-- PODSTAWOWE INFORMACJE (3 KARTY) -->
   <section class="grid grid-cols-1 md:grid-cols-3 gap-6">
@@ -97,21 +95,12 @@
           <dt class="text-gray-400">Tempo (BPM):</dt>
           <dd class="font-medium">{{ tempo }}</dd>
         </div>
-        <div class="flex justify-between">
-          <dt class="text-gray-400">Meter:</dt>
-          <dd class="font-medium italic text-gray-500">—</dd>
-        </div>
-        <div class="flex justify-between">
-          <dt class="text-gray-400">Volume mean:</dt>
-          <dd class="font-medium italic text-gray-500">—</dd>
-        </div>
       </dl>
     </div>
   </section>
 
-  <!-- GATUNEK + PERCEPTION + CHROMA -->
+  <!-- GATUNEK + PERCEPTION + CHROMA / MEL W JEDNEJ SYMETRYCZNEJ SEKCJI -->
   <section class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-
     <!-- Perception features -->
     <div class="bg-gray-800 border border-gray-700 rounded-xl p-5">
       <h3 class="text-lg font-semibold text-white mb-3">
@@ -174,105 +163,34 @@
       </table>
     </div>
 
-    <!-- CHROMA FEATURE BOX -->
-    <div class="bg-gray-800 border border-gray-700 rounded-xl p-5">
-      <h3 class="text-lg font-semibold text-white mb-3">
-        Chroma (average)
-      </h3>
-      <p class="text-xs text-gray-400 mb-3">
-        Średnie wzmocnienie 12 klas wysokości dźwięku (C, C#, …, B).
-        Na tym etapie wpisane są wartości przykładowe / placeholdery.
-      </p>
-      <table class="w-full text-sm text-gray-300">
-        <tbody class="divide-y divide-gray-800">
-          <tr><td class="py-1 pr-3 text-gray-400">C</td><td class="py-1">0.12</td></tr>
-          <tr><td class="py-1 pr-3 text-gray-400">C#</td><td class="py-1">—</td></tr>
-          <tr><td class="py-1 pr-3 text-gray-400">D</td><td class="py-1">—</td></tr>
-          <tr><td class="py-1 pr-3 text-gray-400">D#</td><td class="py-1">—</td></tr>
-          <tr><td class="py-1 pr-3 text-gray-400">E</td><td class="py-1">—</td></tr>
-          <tr><td class="py-1 pr-3 text-gray-400">F</td><td class="py-1">—</td></tr>
-          <tr><td class="py-1 pr-3 text-gray-400">F#</td><td class="py-1">—</td></tr>
-          <tr><td class="py-1 pr-3 text-gray-400">G</td><td class="py-1">—</td></tr>
-          <tr><td class="py-1 pr-3 text-gray-400">G#</td><td class="py-1">—</td></tr>
-          <tr><td class="py-1 pr-3 text-gray-400">A</td><td class="py-1">—</td></tr>
-          <tr><td class="py-1 pr-3 text-gray-400">A#</td><td class="py-1">—</td></tr>
-          <tr><td class="py-1 pr-3 text-gray-400">B</td><td class="py-1">—</td></tr>
-        </tbody>
-      </table>
-    </div>
-
-  </section>
-
-  <!-- SPEKTROGRAMY -->
-  <section class="grid grid-cols-1 lg:grid-cols-2 gap-6">
-    <!-- Chromagram -->
-    <div class="bg-gray-800 border border-gray-700 rounded-xl p-5">
-      <h3 class="text-lg font-semibold text-white mb-3">
-        Chromagram
-      </h3>
-      <div class="rounded-lg overflow-hidden border border-gray-700 bg-gray-900">
-        <img src="{{ chroma_img_src }}"
-             alt="Chromagram"
-             class="w-full h-64 object-contain bg-black">
+    <!-- Chromagram + Mel-spektrogram w trzeciej kolumnie -->
+    <div class="space-y-6">
+      <!-- Chromagram -->
+      <div class="bg-gray-800 border border-gray-700 rounded-xl p-5">
+        <h3 class="text-lg font-semibold text-white mb-3">
+          Chromagram
+        </h3>
+        <div class="rounded-lg overflow-hidden border border-gray-700 bg-gray-900">
+          <img src="{{ chroma_img_src }}"
+               alt="Chromagram"
+               class="w-full h-64 object-contain bg-black">
+        </div>
+        <p class="mt-2 text-xs text-gray-500 break-all">
+        </p>
       </div>
-      <p class="mt-2 text-xs text-gray-500 break-all">
-        Plik źródłowy: {{ saved_chroma_path }}
-      </p>
-    </div>
 
-    <!-- Mel-spektrogram -->
-    <div class="bg-gray-800 border border-gray-700 rounded-xl p-5">
-      <h3 class="text-lg font-semibold text-white mb-3">
-        Mel-spektrogram
-      </h3>
-      <div class="rounded-lg overflow-hidden border border-gray-700 bg-gray-900">
-        <img src="{{ mel_img_src }}"
-             alt="Mel spectrogram"
-             class="w-full h-64 object-contain bg-black">
-      </div>
-      <p class="mt-2 text-xs text-gray-500 break-all">
-        Plik źródłowy: {{ mel_image_path }}
-      </p>
-    </div>
-  </section>
-
-  <!-- SEGMENTY / PITCH VECTORS -->
-  <section>
-    <div class="bg-gray-800 border border-gray-700 rounded-xl p-5">
-      <h3 class="text-lg font-semibold text-white mb-3">
-        Segmenty &amp; pitch vectors
-      </h3>
-      <div class="overflow-x-auto">
-        <table class="min-w-full text-sm text-gray-300">
-          <thead class="border-b border-gray-700 text-gray-400">
-            <tr>
-              <th class="py-2 pr-4 text-left">#</th>
-              <th class="py-2 pr-4 text-left">Start (s)</th>
-              <th class="py-2 pr-4 text-left">Length (s)</th>
-              <th class="py-2 pr-4 text-left">Pitches</th>
-            </tr>
-          </thead>
-          <tbody class="divide-y divide-gray-800">
-            <tr>
-              <td class="py-1 pr-4">1</td>
-              <td class="py-1 pr-4">0.00</td>
-              <td class="py-1 pr-4">0.50</td>
-              <td class="py-1 pr-4">[0.8, 0.1, 0.05, …]</td>
-            </tr>
-            <tr>
-              <td class="py-1 pr-4">2</td>
-              <td class="py-1 pr-4">0.50</td>
-              <td class="py-1 pr-4">0.50</td>
-              <td class="py-1 pr-4">[0.7, 0.2, 0.1, …]</td>
-            </tr>
-            <tr>
-              <td class="py-1 pr-4">3</td>
-              <td class="py-1 pr-4">1.00</td>
-              <td class="py-1 pr-4">0.50</td>
-              <td class="py-1 pr-4">[0.6, 0.3, 0.1, …]</td>
-            </tr>
-          </tbody>
-        </table>
+      <!-- Mel-spektrogram -->
+      <div class="bg-gray-800 border border-gray-700 rounded-xl p-5">
+        <h3 class="text-lg font-semibold text-white mb-3">
+          Mel-spektrogram
+        </h3>
+        <div class="rounded-lg overflow-hidden border border-gray-700 bg-gray-900">
+          <img src="{{ mel_img_src }}"
+               alt="Mel spectrogram"
+               class="w-full h-64 object-contain bg-black">
+        </div>
+        <p class="mt-2 text-xs text-gray-500 break-all">
+        </p>
       </div>
     </div>
   </section>
@@ -402,6 +320,7 @@
         },
       },
     });
-  });    </script>
+  });
+  </script>
 {% endblock %}
 
