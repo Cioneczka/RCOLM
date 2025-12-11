@@ -7,14 +7,14 @@ class Extractors:
         tempo = librosa.beat.tempo(onset_envelope=onset_env, sr=sr)
         return tempo, sr
  
-    @staticmethod
-    def key_extractor(file_path): 
-        
-        audio = es.MonoLoader(filename=file_path)()
-        
-        # Initialize KeyExtractor   
-        key_extractor = es.KeyExtractor()
-        key, scale, strength = key_extractor(audio)
-            
-        
-        return key, scale
+#     @staticmethod
+#     def key_extractor(file_path): 
+#         
+#         audio = es.MonoLoader(filename=file_path)()
+#         
+#         # Initialize KeyExtractor   
+#         key_extractor = es.KeyExtractor()
+#         key, scale, strength = key_extractor(audio)
+#             
+#         
+#         return key, scale
