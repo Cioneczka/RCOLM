@@ -1,36 +1,35 @@
 # --- Web / serwer ---
-Flask==2.3.3
-gunicorn==21.2.0
+Flask==3.1.2
+gunicorn==23.0.0
 
 # --- Podstawowe naukowe / ML ---
-numpy==1.23.5
-scipy==1.10.1
-pandas==1.5.3
-scikit-learn==1.2.2
-joblib==1.2.0
-h5py==3.8.0
+numpy==1.26.4
+scipy==1.15.3
+pandas==2.3.3
+scikit-learn==1.7.2
+joblib==1.5.2
+h5py==3.15.1
 
 # --- TensorFlow / Keras ---
-tensorflow==2.12.1
-keras==2.12.0
-ml_dtypes==0.2.0
+tensorflow==2.20.0
+ml_dtypes==0.5.3
 
 # --- Audio / DSP ---
-librosa==0.9.2
-soundfile==0.12.1
-audioread==3.0.1
-resampy==0.4.2
-soxr==0.3.7
-musdb==0.4.0
-stempeg==0.2.3
-crepe==0.0.12
+librosa==0.11.0
+soundfile==0.13.1
+audioread==3.1.0
+resampy==0.4.3
+soxr==1.0.0
+musdb==0.4.3
+stempeg==0.2.6
+crepe==0.0.16
 ffmpeg-python==0.2.0
 
 # --- Wykresy / wizualizacja ---
-matplotlib==3.7.3
+matplotlib==3.9.0
 
 # --- Narzędzia ---
-tqdm==4.66.1
-requests==2.31.0
-rich==13.7.0
+tqdm==4.67.1
+requests==2.32.5
+rich==14.2.0
 
