@@ -87,16 +87,10 @@ def analyze():
 
 
 
-    def dropout_fix(*args, **kwargs):
-        if "noise_shape" in kwargs and isinstance(kwargs["noise_shape"], int):
-            kwargs["noise_shape"] = (kwargs["noise_shape"],)
-        return Dropout(*args, **kwargs)
 
 
-
-    #with custom_object
     # loading model with metadata
-    model, meta = MLP_gtzan.load_model(gtzan_dir, custom_objects = {"Dropout":dropout_fix})
+    model, meta = MLP_gtzan.load_model(gtzan_dir)
     mime = original_name.split(".")[1]
     # activating genre prediction function
     genre_predictions = MLP_gtzan.predict_from_path(model, meta, mel_image_path)
