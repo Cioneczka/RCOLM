@@ -96,7 +96,7 @@ def analyze():
 
 
     # loading model with metadata
-    model, meta = MLP_gtzan.load_model(gtzan_dir, costom_objects = {"Dropout":dropout_fix})
+    model, meta = MLP_gtzan.load_model(gtzan_dir, custom_objects = {"Dropout":dropout_fix})
     mime = original_name.split(".")[1]
     # activating genre prediction function
     genre_predictions = MLP_gtzan.predict_from_path(model, meta, mel_image_path)
