@@ -87,10 +87,10 @@ def analyze():
 
 
 
-#     def dropout_fix(*args, **kwargs):
-#         if "noise_shape" in kwargs and isinstance(kwargs["noise_shape"], int):
-#             kwargs["noise_shape"] = (kwargs["noise_shape"],)
-#         return Dropout(*args, **kwargs)
+    def dropout_fix(*args, **kwargs):
+        if "noise_shape" in kwargs and isinstance(kwargs["noise_shape"], int):
+            kwargs["noise_shape"] = (kwargs["noise_shape"],)
+        return Dropout(*args, **kwargs)
 
 
 
