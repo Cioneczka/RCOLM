@@ -1,5 +1,6 @@
 # Bazowy Python (slim + system deps later)
 FROM python:3.11-slim
+ARG CACHEBUST=1
 
 # Instalacja systemowych zależności dla:
 # - matplotlib (libfreetype, libpng, fontconfig)
