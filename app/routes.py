@@ -94,7 +94,7 @@ def analyze():
 
 
 
-
+    #with custom_object
     # loading model with metadata
     model, meta = MLP_gtzan.load_model(gtzan_dir, custom_objects = {"Dropout":dropout_fix})
     mime = original_name.split(".")[1]
