@@ -145,7 +145,7 @@ class MLP_gtzan:
 
  #this method takes dir where model is saved, and its returing it with metadata(classes)
     @staticmethod
-    def load_model(path):
+    def load_model(path, custom_objects=none):
         """
         Ładuje model (SavedModel albo .h5/.keras) oraz meta.json.
 
