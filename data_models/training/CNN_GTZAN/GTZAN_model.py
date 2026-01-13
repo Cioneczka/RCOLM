@@ -145,7 +145,7 @@ class MLP_gtzan:
 
  #this method takes dir where model is saved, and its returing it with metadata(classes)
     @staticmethod
-    def load_model(path, custom_objects=none):
+    def load_model(path, custom_objects):
         """
         Ładuje model (SavedModel albo .h5/.keras) oraz meta.json.
 
@@ -181,7 +181,8 @@ class MLP_gtzan:
                 model_path = candidates[0]
 
         # 3) Ładowanie modelu
-        model = tf.keras.models.load_model(str(model_path), compile=False)
+        model = tf.keras.models.load_model(str(model_path), compile=False,
+                                           custom_objects=custom_objects)
 
         # 4) Ładowanie metadata.json z katalogu, w którym leży model
         meta_path = base_dir / "metadata.json"
