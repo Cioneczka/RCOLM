@@ -85,8 +85,18 @@ def analyze():
     # TODO: zmienić na dynamiczny link do bazy
     mel_image_path = saved_mel_path
 
+
+
+    def dropout_fix(*args, **kwargs):
+        if "noise_shape" in kwargs and isinstance(kwargs["noise_shape"], int):
+            kwargs["noise_shape"] = (kwargs["noise_shape"],)
+        return Dropout(*args, **kwargs)
+
+
+
+
     # loading model with metadata
-    model, meta = MLP_gtzan.load_model(gtzan_dir)
+    model, meta = MLP_gtzan.load_model(gtzan_dir, costom_objects = {"Dropout":dropout_fix})
     mime = original_name.split(".")[1]
     # activating genre prediction function
     genre_predictions = MLP_gtzan.predict_from_path(model, meta, mel_image_path)
