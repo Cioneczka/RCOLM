@@ -1,0 +1,33 @@
+#ignoruj środowisko virtualne
+myenv/
+
+#ignoruj wrażliwe pliki z kluczami
+config/*.json
+
+#ignoruj pliki tymczasowe i systemowe 
+__pycache__/
+*.pyc
+*.pyo
+*.ipynb_checkpoints/
+app/static/tailwindcss
+node_modules/
+.venv/
+__pycache__/
+dist/
+build/
+*.wav
+*.mp3
+*.flac
+*.pt
+
+*.onnx
+*.pkl
+*.zip
+*.png
+*.db*
+*.init  
+*.mp4
+__*.py
+*.npz
+*.ipynb
+!app/static/**/*.png
